@@ -2,28 +2,31 @@ research_task:
     description: >
         find the most relevant scientific papers on {topic}
     expected_output: >
-        A bullet list of 5-6 scientific papers. 
+        A bullet list of 2 scientific papers. 
+
+# scraper_task:
+#     description: >
+#         find the most relevant scientific papers on {topic}
+#     expected_output: >
+#         A bullet list of 2 scientific papers. 
 
 summarize_task:
     description: >
         Summarize the research findings from the previous task
     expected_output: >
-        A bullet list of 5-6 points. Each point is a summary (5-6 sentences)
+        A bullet list. Each point of the bullet list is a summary (5-6 sentences)
          of one of the scientific papers from the previous task
+
+reviewer_task:
+    description: >
+        define 3 strong points and 3 limitations of the scientific papers.
+        Strong points are the main benefits of the paper, and limitations are the areas where the paper could be improved
+    expected_output: >
+        A bullet list. For each paper, define 3 bullet for strong points and 3 bullet for limitations
+         
 
 aggregate_task:
     description: >
         Aggregate the research findings from the previous task
     expected_output: >
         A final text aggregating all the Summarize from the previous task into a continuos ad easy to read text
-
-# blog_task:
-#     # description: >
-#     #     Write a short scientific paper about {topic} using the facts from the research.
-#     description: >
-#         You MUST use the provided research findings (the bulleted list from the previous task) 
-#         AS YOUR ONLY SOURCE OF TRUTH. Condense this information into a cohesive, 
-#         three-paragraph executive summary about {topic}. DO NOT create any other sections
-#         like a table of contents, introduction, or bibliography.
-#     expected_output: >
-#         A three-paragraph executive summary
