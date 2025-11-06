@@ -1,15 +1,17 @@
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import LLM, Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-
 from crewai_tools import (
-    SerperDevTool,
+    ArxivPaperTool,
+    DirectoryReadTool,
+    FileReadTool,
+    FileWriterTool,
+    # ScrapeElementFromWebsiteTool,
     ScrapeWebsiteTool,
-    # DirectoryReadTool,
-    # FileWriterTool,
-    # FileReadTool,
+    SerperDevTool,
 )
-
 from dotenv import load_dotenv
+
+from pdf_download_tool import PDFDownloaderTool
 
 load_dotenv()
 
@@ -17,8 +19,8 @@ llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
 
 
 @CrewBase
-class BlogCrew:
-    """ "Blog writing crew"""
+class ResearcherCrew:
+    """research/writing crew"""
 
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
@@ -26,14 +28,35 @@ class BlogCrew:
     @agent
     def researcher(self) -> Agent:
         return Agent(
-            # tools=[SerperDevTool(),ScrapeWebsiteTool()],
-            tools=[SerperDevTool()],
-            llm="gemini/gemini-2.0-flash",
+            tools=[
+                SerperDevTool(),
+                # PDFDownloaderTool(),  # pyright: ignore[reportArgumentType]
+                ArxivPaperTool(
+                    download_pdfs=True,
+                    save_dir="./saved_papers",
+                    use_title_as_filename=True,
+                ),
+                # ScrapeWebsiteTool(),
+                # FileWriterTool(),
+                # DirectoryReadTool(),
+            ],
+            # llm="gemini/gemini-2.0-flash",
+            llm=llm,
             role="Scientific Papers Researcher Specialist",
-            goal="Accurately search the internet to find pertinent scientific paper",
+            # goal="Accurately search the internet to find pertinent scientific"
+            # "papers, scrape their full content, and save each paper's content to"
+            # "a dedicated file.",
+            goal="Accurately search the internet to find pertinent scientific"
+            "papers, save the URL, and use it with the tool ArxivPaperTool to download the PDF in a specific folder",
+            # backstory=(
+            #     "You are a meticulous researcher, and your primary function is "
+            #     "to use your search and scraping tools to gather data, and your "
+            #     "file writing tool to organize and save it."
+            # ),
             backstory=(
                 "You are a meticulous researcher, and your primary function is "
-                "to use your search tool to gather data."
+                "to use your search tool to gather data, and your "
+                "pdf download tool to save it."
             ),
             verbose=True,
         )
@@ -43,14 +66,17 @@ class BlogCrew:
         return Agent(
             llm=llm,
             # llm="gemini/gemini-2.0-flash",
-            tool = [ScrapeWebsiteTool()],
+            tools=[FileReadTool(), DirectoryReadTool()],
             role="Expert Summarization Writer",
-            goal="Write a short summarization of the scientific papers from the previous task",
-            backstory="You are an experience writer in summarizing a text",
+            # goal="Write a short summarization of the scientific papers found from the previous task,"
+            # "make sure that all the paper is taken in consideration by using the tools (if given)",
+            goal="Write a short summarization of the scientific papers found inside the folder 'saved_papers'",
+            backstory="You are an experience writer in summarizing a text, "
+            "speficially scientific papers",
             verbose=True,
         )
 
-    @agent 
+    @agent
     def reviewer(self) -> Agent:
         return Agent(
             llm=llm,
@@ -69,6 +95,7 @@ class BlogCrew:
             on the scientific merit and applicability of the work""",
             verbose=True,
         )
+
     @agent
     def aggregator(self) -> Agent:
         return Agent(
@@ -96,6 +123,13 @@ class BlogCrew:
             agent=self.researcher(),
         )
 
+    # @task
+    # def scrape_task(self) -> Task:
+    #     return Task(
+    #         config=self.tasks_config["scraper_task"],  # type: ignore[index]
+    #         agent=self.researcher(),
+    #     )
+
     @task
     def summarize_task(self) -> Task:
         return Task(
@@ -109,6 +143,7 @@ class BlogCrew:
             config=self.tasks_config["reviewer_task"],  # type: ignore[index]
             agent=self.reviewer(),
         )
+
     @task
     def aggregate_task(self) -> Task:
         return Task(
@@ -119,11 +154,23 @@ class BlogCrew:
     @crew
     def crew(self) -> Crew:
         return Crew(
-            agents=[self.researcher(), self.writer(), self.aggregator(),self.reviewer()],
-            tasks=[self.research_task(), self.summarize_task(), self.aggregate_task(),self.reviewer_task()],
+            agents=[
+                self.researcher(),
+                self.writer(),
+                self.aggregator(),
+                self.reviewer(),
+            ],
+            tasks=[
+                self.research_task(),
+                # self.scrape_task(),
+                self.summarize_task(),
+                self.reviewer_task(),
+                self.aggregate_task(),
+            ],
+            process=Process.sequential,
         )
 
 
 if __name__ == "__main__":
-    blog_crew = BlogCrew()
-    blog_crew.crew().kickoff(inputs={"topic": "Summarization with llms"})
+    research_crew = ResearcherCrew()
+    research_crew.crew().kickoff(inputs={"topic": "llm for summarization"})

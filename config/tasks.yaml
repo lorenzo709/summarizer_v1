@@ -1,14 +1,15 @@
+# for debug reason 2 papers at the time
 research_task:
     description: >
-        find the most relevant scientific papers on {topic}
+        find the 2 most relevant scientific papers on {topic}
     expected_output: >
-        A bullet list of 2 scientific papers. 
+        A bullet list of 2 scientific papers.
 
 # scraper_task:
 #     description: >
-#         find the most relevant scientific papers on {topic}
+#         recover the context of the scientific paper using the tool
 #     expected_output: >
-#         A bullet list of 2 scientific papers. 
+#         confermation of the success of the download + path where they are stored
 
 summarize_task:
     description: >
@@ -23,10 +24,9 @@ reviewer_task:
         Strong points are the main benefits of the paper, and limitations are the areas where the paper could be improved
     expected_output: >
         A bullet list. For each paper, define 3 bullet for strong points and 3 bullet for limitations
-         
 
 aggregate_task:
     description: >
-        Aggregate the research findings from the previous task
+        Aggregate the research findings and the strong points and limitations from the previous tasks
     expected_output: >
-        A final text aggregating all the Summarize from the previous task into a continuos ad easy to read text
+        A final text aggregating all the Summarize from the previous task into a continuos ad easy to read text + pros and cons
