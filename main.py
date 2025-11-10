@@ -8,6 +8,7 @@ from crewai_tools import (
     # ScrapeElementFromWebsiteTool,
     ScrapeWebsiteTool,
     SerperDevTool,
+    PDFSearchTool
 )
 from dotenv import load_dotenv
 
@@ -33,7 +34,7 @@ class ResearcherCrew:
                 # PDFDownloaderTool(),  # pyright: ignore[reportArgumentType]
                 ArxivPaperTool(
                     download_pdfs=True,
-                    save_dir="./saved_papers",
+                    save_dir="./knowledge",
                     use_title_as_filename=True,
                 ),
                 # ScrapeWebsiteTool(),
@@ -61,12 +62,31 @@ class ResearcherCrew:
             verbose=True,
         )
 
+    @agent 
+    def embedder(self) -> Agent:
+        return Agent(
+            llm=llm,
+            tools= [DirectoryReadTool(),PDFSearchTool(
+                config = {
+                    "embedding_model": {
+                        "provider": "ollama",  # or: "google-generativeai", "cohere", "ollama", ...
+                        "config": {
+                            "model": "nomic-embed-text:latest",
+                        },
+                    },
+                }
+            )],
+            role= "Embedding generator Agent",
+            goal = "Generate embeddings from the pdfs found inside the knowledge folder",
+            backstory= "You are a cabable agent able to selects the most important informations from a pdf file and convert them in useful context for other agents",
+            verbose= True
+        )
     @agent
     def writer(self) -> Agent:
         return Agent(
             llm=llm,
             # llm="gemini/gemini-2.0-flash",
-            tools=[FileReadTool(), DirectoryReadTool()],
+            # tools=[FileReadTool(), DirectoryReadTool()],
             role="Expert Summarization Writer",
             # goal="Write a short summarization of the scientific papers found from the previous task,"
             # "make sure that all the paper is taken in consideration by using the tools (if given)",
@@ -123,12 +143,12 @@ class ResearcherCrew:
             agent=self.researcher(),
         )
 
-    # @task
-    # def scrape_task(self) -> Task:
-    #     return Task(
-    #         config=self.tasks_config["scraper_task"],  # type: ignore[index]
-    #         agent=self.researcher(),
-    #     )
+    @task
+    def scrape_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["scraper_task"],  # type: ignore[index]
+            agent=self.embedder(),
+        )
 
     @task
     def summarize_task(self) -> Task:
@@ -156,13 +176,14 @@ class ResearcherCrew:
         return Crew(
             agents=[
                 self.researcher(),
+                self.embedder(),
                 self.writer(),
                 self.aggregator(),
                 self.reviewer(),
             ],
             tasks=[
                 self.research_task(),
-                # self.scrape_task(),
+                self.scrape_task(),
                 self.summarize_task(),
                 self.reviewer_task(),
                 self.aggregate_task(),
