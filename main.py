@@ -77,7 +77,7 @@ class ResearcherCrew:
                 }
             )],
             role= "Embedding generator Agent",
-            goal = "Generate embeddings from the pdfs found inside the knowledge folder",
+            goal = "Generate embeddings from the pdfs found inside the 'knowledge' folder",
             backstory= "You are a cabable agent able to selects the most important informations from a pdf file and convert them in useful context for other agents",
             verbose= True
         )
@@ -86,13 +86,13 @@ class ResearcherCrew:
         return Agent(
             llm=llm,
             # llm="gemini/gemini-2.0-flash",
-            # tools=[FileReadTool(), DirectoryReadTool()],
+            tools=[FileReadTool(), DirectoryReadTool()],
             role="Expert Summarization Writer",
             # goal="Write a short summarization of the scientific papers found from the previous task,"
             # "make sure that all the paper is taken in consideration by using the tools (if given)",
-            goal="Write a short summarization of the scientific papers found inside the folder 'saved_papers'",
+            goal="Write a short summarization of the scientific papers found inside the folder 'knowledge'",
             backstory="You are an experience writer in summarizing a text, "
-            "speficially scientific papers",
+            "speficially scientific papers, always capable to select the most relevant informations",
             verbose=True,
         )
 
