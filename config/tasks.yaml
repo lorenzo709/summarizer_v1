@@ -1,7 +1,7 @@
 # for debug reason 2 papers at the time
 research_task:
     description: >
-        find the 2 most relevant scientific papers on {topic} 
+        find the 2 scientific papers on {topic}, using a web sercher tool and download them with tools such as ArxivPaperTool 
     expected_output: >
         Confermation that 2 papers have been found.
 

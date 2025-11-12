@@ -27,9 +27,7 @@ class ResearcherCrew:
     def researcher(self) -> Agent:
         return Agent(
             tools=[
-                SerperDevTool(
-                    # n_results=3
-                ),
+                SerperDevTool(),
                 ArxivPaperTool(
                     download_pdfs=True,
                     save_dir="./knowledge",
@@ -39,16 +37,8 @@ class ResearcherCrew:
             # llm="gemini/gemini-2.0-flash",
             llm=llm,
             role="Scientific Papers Researcher Specialist",
-            # goal="Accurately search the internet to find pertinent scientific"
-            # "papers, scrape their full content, and save each paper's content to"
-            # "a dedicated file.",
             goal="Accurately search the internet to find pertinent scientific"
-            "papers, save the URL, and use it with the tool ArxivPaperTool to download the PDF in a specific folder",
-            # backstory=(
-            #     "You are a meticulous researcher, and your primary function is "
-            #     "to use your search and scraping tools to gather data, and your "
-            #     "file writing tool to organize and save it."
-            # ),
+            "papers on a given topic and use tools such as ArxivPaperTool to download the PDF in a specific folder",
             backstory=(
                 "You are a meticulous researcher, and your primary function is "
                 "to use your search tool to gather data, and your "
@@ -123,7 +113,7 @@ class ResearcherCrew:
     def scrape_task(self) -> Task:
         return Task(
             config=self.tasks_config["scraper_task"],  # type: ignore[index]
-            agent=self.embedder(),
+            agent=self.writer(),
         )
 
     @task
@@ -169,4 +159,5 @@ class ResearcherCrew:
 
 if __name__ == "__main__":
     research_crew = ResearcherCrew()
-    research_crew.crew().kickoff(inputs={"topic": "llm for summarization"})
+    result = research_crew.crew().kickoff(inputs={"topic": "llm for summarization"})
+    print(result)
