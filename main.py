@@ -4,15 +4,12 @@ from crewai_tools import (
     ArxivPaperTool,
     DirectoryReadTool,
     FileReadTool,
-    FileWriterTool,
-    # ScrapeElementFromWebsiteTool,
     ScrapeWebsiteTool,
     SerperDevTool,
-    PDFSearchTool
 )
 from dotenv import load_dotenv
 
-from pdf_download_tool import PDFDownloaderTool
+from pdf_parser import PDFParserTool
 
 load_dotenv()
 
@@ -30,16 +27,14 @@ class ResearcherCrew:
     def researcher(self) -> Agent:
         return Agent(
             tools=[
-                SerperDevTool(),
-                # PDFDownloaderTool(),  # pyright: ignore[reportArgumentType]
+                SerperDevTool(
+                    # n_results=3
+                ),
                 ArxivPaperTool(
                     download_pdfs=True,
                     save_dir="./knowledge",
                     use_title_as_filename=True,
                 ),
-                # ScrapeWebsiteTool(),
-                # FileWriterTool(),
-                # DirectoryReadTool(),
             ],
             # llm="gemini/gemini-2.0-flash",
             llm=llm,
@@ -62,35 +57,16 @@ class ResearcherCrew:
             verbose=True,
         )
 
-    @agent 
-    def embedder(self) -> Agent:
-        return Agent(
-            llm=llm,
-            tools= [DirectoryReadTool(),PDFSearchTool(
-                config = {
-                    "embedding_model": {
-                        "provider": "ollama",  # or: "google-generativeai", "cohere", "ollama", ...
-                        "config": {
-                            "model": "nomic-embed-text:latest",
-                        },
-                    },
-                }
-            )],
-            role= "Embedding generator Agent",
-            goal = "Generate embeddings from the pdfs found inside the 'knowledge' folder",
-            backstory= "You are a cabable agent able to selects the most important informations from a pdf file and convert them in useful context for other agents",
-            verbose= True
-        )
     @agent
     def writer(self) -> Agent:
         return Agent(
             llm=llm,
             # llm="gemini/gemini-2.0-flash",
-            tools=[FileReadTool(), DirectoryReadTool()],
+            tools=[PDFParserTool(), DirectoryReadTool()],
             role="Expert Summarization Writer",
             # goal="Write a short summarization of the scientific papers found from the previous task,"
             # "make sure that all the paper is taken in consideration by using the tools (if given)",
-            goal="Write a short summarization of the scientific papers found inside the folder 'knowledge'",
+            goal="Write a short summarization for each scientific papers found inside the folder 'knowledge'",
             backstory="You are an experience writer in summarizing a text, "
             "speficially scientific papers, always capable to select the most relevant informations",
             verbose=True,
@@ -176,7 +152,6 @@ class ResearcherCrew:
         return Crew(
             agents=[
                 self.researcher(),
-                self.embedder(),
                 self.writer(),
                 self.aggregator(),
                 self.reviewer(),
