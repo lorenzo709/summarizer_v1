@@ -1,0 +1,6 @@
+reviewer_task:
+    description: >
+        define 3 strong points and 3 limitations of the scientific papers.
+        Strong points are the main benefits of the paper, and limitations are the areas where the paper could be improved
+    expected_output: >
+        A bullet list. 3 bullet for strong points and 3 bullet for limitations

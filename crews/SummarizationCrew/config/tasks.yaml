@@ -1,0 +1,6 @@
+summarize_task:
+    description: >
+        Summarize this scientific paper:
+        {paper}
+    expected_output: >
+        a consice and continuos text containing all the important informations from the paper

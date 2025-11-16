@@ -1,0 +1,17 @@
+research_task:
+    description: >
+        find the 2 scientific papers on {topic}, using the tool SerperDevTool for web researchand ArxivPaperTool to find and save them inside the knowledge folder
+    expected_output: >
+        A python list containing the paths to the pdf of the scientific paper downloaded.
+        Example: you found paper1.pdf and paper2.pdf 
+        Output:
+            [knowledge/paper1.pdf,
+            knowledge/paper2.pdf,
+            ...]
+#         Confermation that 2 papers have been found.
+
+scraper_task:
+    description: >
+        recover the context of the scientific paper found in path using the custom tool PDFParserTool
+    expected_output: >
+        confermation of the success of the operation

@@ -1,13 +1,18 @@
 # for debug reason 2 papers at the time
 research_task:
     description: >
-        find the 2 scientific papers on {topic}, using a web sercher tool and download them with tools such as ArxivPaperTool 
+        find the 2 scientific papers on {topic}, using the tool SerperDevTool for web researchand ArxivPaperTool to find and save them inside the knowledge folder
     expected_output: >
-        Confermation that 2 papers have been found.
-
+        A python list containing the paths to the pdf of the scientific paper downloaded.
+        Example: you found paper1.pdf and paper2.pdf 
+        Output:
+            [knowledge/paper1.pdf,
+            knowledge/paper2.pdf,
+            ...]
+#         Confermation that 2 papers have been found.
 scraper_task:
     description: >
-        recover the context of the scientific paper using the custom tool PDFParserTool
+        recover the context of the scientific paper found in path {path} using the custom tool PDFParserTool
     expected_output: >
         confermation of the success of the operation
 
@@ -23,10 +28,10 @@ reviewer_task:
         define 3 strong points and 3 limitations of the scientific papers.
         Strong points are the main benefits of the paper, and limitations are the areas where the paper could be improved
     expected_output: >
-        A bullet list. For each paper, define 3 bullet for strong points and 3 bullet for limitations
+        A bullet list. 3 bullet for strong points and 3 bullet for limitations
 
 aggregate_task:
     description: >
-        Aggregate the research findings and the strong points and limitations from the previous tasks
+        Aggregate the research findings and the strong points and limitations from {summaries_and_pro_cons}
     expected_output: >
         A final text aggregating all the Summarize from the previous task into a continuos ad easy to read text + pros and cons
