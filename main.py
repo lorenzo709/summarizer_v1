@@ -274,7 +274,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             .kickoff(inputs={"topic": "llm for summarization"})
         )
 
-        self.state.parsed_papers = output
+        self.state.parsed_papers = output("parsed_papers")
 
     @listen(research_interesting_papers)
     async def summarize_papers(self):

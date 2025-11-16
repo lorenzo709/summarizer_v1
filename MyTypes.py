@@ -9,6 +9,9 @@ class ParsedText(BaseModel):
     pdf_name: str
     parsed_text: str
 
+class ParsedPapers(BaseModel):
+    parsed_papers: List[ParsedText]
+
 class Summary(BaseModel):
     summary: str
 

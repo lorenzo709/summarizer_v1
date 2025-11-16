@@ -7,7 +7,7 @@ from crewai_tools import (
     ScrapeWebsiteTool,
     SerperDevTool,
 )
-from MyTypes import Paths_to_Papers, ParsedText
+from MyTypes import Paths_to_Papers, ParsedText, ParsedPapers
 from dotenv import load_dotenv
 
 from typing import List
@@ -18,7 +18,7 @@ llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
 
 @CrewBase 
 class ResearcherCrew:
-    agents_config = "config/agents.yaml"
+    # agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
 
     @agent
@@ -59,8 +59,8 @@ class ResearcherCrew:
     def scrape_task(self) -> Task:
         return Task(
             config=self.tasks_config["scraper_task"],  # type: ignore[index]
-            agent=self.writer(),
-            output_pydantic= List[ParsedText]
+            agent=self.researcher(),
+            output_pydantic= ParsedPapers
         )
 
     @crew
