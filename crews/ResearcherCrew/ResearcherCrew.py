@@ -31,13 +31,14 @@ class ResearcherCrew:
                     save_dir="./knowledge",
                     use_title_as_filename=True,
                 ),
-                PDFParserTool()
+                DirectoryReadTool()
             ],
-            # llm="gemini/gemini-2.0-flash",
-            llm=llm,
+            llm="gemini/gemini-2.0-flash",
+            # llm=llm,
             role="Scientific Papers Researcher Specialist",
-            goal="Accurately search the internet to find pertinent scientific"
-            "papers on a given topic and use tools such as ArxivPaperTool to download the PDF in a specific folder",
+            goal="Accurately search the internet to find scientific papers on a"
+            "{topic} and use tools such as ArxivPaperTool to download the PDF in"
+            "a specific folder",
             backstory=(
                 "You are a meticulous researcher, and your primary function is "
                 "to use your search tool to gather data, and your "
@@ -45,7 +46,28 @@ class ResearcherCrew:
             ),
             verbose=True,
         )
-    
+
+    @agent
+    def parser(self) -> Agent:
+        return Agent(
+            llm="gemini/gemini-2.0-flash",
+            # llm = llm,
+            tools=[
+                PDFParserTool(),
+                DirectoryReadTool()
+            ],
+            role="Scientific Papers Parser Specialist",
+            goal="For each path given in the output of the previous agent,Use"
+            "the PDFParserTool to extract text the PDF file in the knowledge"
+            "folder.",
+            backstory=(
+                """ 
+                you are a specialist in looking into a specific folder, find pdfs and 
+                parse the text inside of them
+                """
+            )
+        )   
+
 
     @task
     def research_task(self) -> Task:
@@ -59,14 +81,14 @@ class ResearcherCrew:
     def scrape_task(self) -> Task:
         return Task(
             config=self.tasks_config["scraper_task"],  # type: ignore[index]
-            agent=self.researcher(),
+            agent=self.parser(),
             output_pydantic= ParsedPapers
         )
 
     @crew
     def crew(self) -> Crew:
         return Crew(
-            agents=[self.researcher()],
+            agents=[self.researcher(),self.parser()],
             tasks=[self.research_task(),self.scrape_task()],
             process=Process.sequential,
         )

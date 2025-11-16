@@ -1,17 +1,24 @@
 research_task:
     description: >
-        find the 2 scientific papers on {topic}, using the tool SerperDevTool for web researchand ArxivPaperTool to find and save them inside the knowledge folder
+        find the 2 scientific papers on {topic}.
+        Use the tool Arxiv Paper Fetcher and Downloader to find them on Arxiv and save them inside the knowledge folder
     expected_output: >
-        A python list containing the paths to the pdf of the scientific paper downloaded.
-        Example: you found paper1.pdf and paper2.pdf 
+        A list containing the paths to the pdf of the scientific paper downloaded.
+        A path is usually in this form: knowledge/title_paper.pdf
+        Example: you found title_paper1.pdf and title_paper2.pdf 
         Output:
-            [knowledge/paper1.pdf,
-            knowledge/paper2.pdf,
-            ...]
+            knowledge/title_paper1.pdf,
+            knowledge/title_paper2.pdf,
 #         Confermation that 2 papers have been found.
 
 scraper_task:
     description: >
-        recover the context of the scientific paper found in path using the custom tool PDFParserTool
+        recover the context of the scientific paper found in path (make sure to
+        use the DirectoryReadTool as well to see the path) using the custom tool
+        PDFParserTool.
+        For each PDF parsed you should also save the name of the paper
+        Example: knowledge/title_paper1.pdf
+        pdf_name: title_paper1
+        parsed_text: <text of the paper>
     expected_output: >
-        confermation of the success of the operation
+        A list of parsed pdf papers with the name of the papers

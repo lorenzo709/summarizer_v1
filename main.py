@@ -274,7 +274,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             .kickoff(inputs={"topic": "llm for summarization"})
         )
 
-        self.state.parsed_papers = output("parsed_papers")
+        self.state.parsed_papers = output["parsed_papers"]
 
     @listen(research_interesting_papers)
     async def summarize_papers(self):
@@ -285,13 +285,11 @@ class ResearcherFlow(Flow[ResearcherState]):
             output = (
                 SummarizationCrew()
                 .crew()
-                .kickoff(
-                    inputs={
-                        "paper": parsed_text
-                    }
-                )
+                .kickoff( inputs={ "paper": parsed_text.parsed_text } )
             )
-            summary = output["summary"]
+            print("IM HERE!!!!!")
+            summ = output["summary"]
+            summary = Summary(summary=summ)
             return summary
         
         for raw_paper in self.state.parsed_papers:
@@ -305,11 +303,14 @@ class ResearcherFlow(Flow[ResearcherState]):
     @listen(summarize_papers)
     async def aggregate_results(self):
         print("Aggregating all the summarises in a single block")
+        all_summaries_string = [summary.summary for summary in self.state.summaries]
+        all_summaries = " ".join(all_summaries_string)
+        print(all_summaries)
         output = (
             AggregateCrew()
             .crew()
             .kickoff(
-                inputs={"summaries": self.state.summaries}
+                inputs={"summaries": all_summaries}
             )
         )
 
@@ -326,17 +327,6 @@ def plot():
 if __name__ == "__main__":
 
     kickoff()
-    # print("CREW 1")
-    # crew_example = ResearchCrew()
-    # pdf_found_list = crew_example.crew().kickoff(inputs={"topic": "llm for summarization"})
-
-    # print("CREW 2")
-    # research_crew = ResearcherCrew()
-    # summaries_and_pro_cons = research_crew.crew().kickoff_for_each_async(inputs={"paths": pdf_found_list})
-
-    # print("CREW 3")
-    # aggregate_crew = AggregateCrew()
-    # aggregate_crew.crew().kickoff(inputs={"summaries_and_pro_cons": summaries_and_pro_cons})
 
 
 

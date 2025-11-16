@@ -18,7 +18,7 @@ llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
 class SummarizationCrew:
     """research/writing crew"""
 
-    agents_config = "config/agents.yaml"
+    # agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
 
     @agent
@@ -26,12 +26,12 @@ class SummarizationCrew:
         return Agent(
             llm=llm,
             # llm="gemini/gemini-2.0-flash",
-            tools=[DirectoryReadTool()],
+            # tools=[DirectoryReadTool()],
             role="Expert Summarization Writer",
             # goal="Write a short summarization of the scientific papers found from the previous task,"
             # "make sure that all the paper is taken in consideration by using the tools (if given)",
             # goal="Write a short summarization for each scientific papers found inside the folder 'knowledge'",
-            goal="Write a short summarization on the scientific paper found inside the folder 'knowledge'",
+            goal="Write a short summarization on this paper text given ",
             backstory="You are an experience writer in summarizing a text, "
             "speficially scientific papers, always capable to select the most relevant informations",
             verbose=True,
@@ -50,14 +50,7 @@ class SummarizationCrew:
     @crew
     def crew(self) -> Crew:
         return Crew(
-            agents=[
-                self.writer(),
-                # self.reviewer(),
-            ],
-            tasks=[
-                # self.scrape_task(),
-                self.summarize_task(),
-                # self.reviewer_task(),
-            ],
+            agents=[ self.writer() ],
+            tasks=[ self.summarize_task() ],
             process=Process.sequential,
         )
