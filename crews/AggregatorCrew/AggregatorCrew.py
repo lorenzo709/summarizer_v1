@@ -10,6 +10,7 @@ from crewai_tools import (
 from dotenv import load_dotenv
 
 from tools.pdf_parser import PDFParserTool
+from MyTypes import Summary
 
 load_dotenv()
 
@@ -45,6 +46,7 @@ class AggregateCrew:
         return Task(
             config=self.tasks_config["aggregate_task"],  # type: ignore[index]
             agent=self.aggregator(),
+            output_pydantic=Summary
         )
 
     @crew

@@ -6,8 +6,8 @@ class Paths_to_Papers(BaseModel):
     paths: List[str]
 
 class ParsedText(BaseModel):
-    pdf_name: str
-    parsed_text: str
+    pdf_name: str 
+    parsed_text: str 
 
 class ParsedPapers(BaseModel):
     parsed_papers: List[ParsedText]

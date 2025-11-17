@@ -33,8 +33,8 @@ class ResearcherCrew:
                 ),
                 DirectoryReadTool()
             ],
-            llm="gemini/gemini-2.0-flash",
-            # llm=llm,
+            # llm="gemini/gemini-2.0-flash",
+            llm=llm,
             role="Scientific Papers Researcher Specialist",
             goal="Accurately search the internet to find scientific papers on a"
             "{topic} and use tools such as ArxivPaperTool to download the PDF in"
@@ -50,8 +50,8 @@ class ResearcherCrew:
     @agent
     def parser(self) -> Agent:
         return Agent(
-            llm="gemini/gemini-2.0-flash",
-            # llm = llm,
+            # llm="gemini/gemini-2.0-flash",
+            llm = llm,
             tools=[
                 PDFParserTool(),
                 DirectoryReadTool()
@@ -62,10 +62,11 @@ class ResearcherCrew:
             "folder.",
             backstory=(
                 """ 
-                you are a specialist in looking into a specific folder, find pdfs and 
-                parse the text inside of them
+                you are a specialist in parsing text from a PDF file into a precise, easily digestible text format
+                for other experts to use.
                 """
-            )
+            ),
+            verbose=True
         )   
 
 
