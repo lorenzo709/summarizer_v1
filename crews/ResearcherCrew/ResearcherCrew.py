@@ -14,7 +14,8 @@ from typing import List
 load_dotenv()
 
 from tools.pdf_parser import PDFParserTool
-llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
+# llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
+llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434")
 
 @CrewBase 
 class ResearcherCrew:
