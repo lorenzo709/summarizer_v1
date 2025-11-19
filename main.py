@@ -72,7 +72,7 @@ class ResearcherFlow(Flow[ResearcherState]):
     async def aggregate_results(self):
         print("Aggregating all the summarises in a single block")
         all_summaries_string = [summary.summary for summary in self.state.summaries]
-        all_summaries = "/n/n".join(all_summaries_string)
+        all_summaries = "\n\n".join(all_summaries_string)
         print(all_summaries)
         output = (
             AggregateCrew()
