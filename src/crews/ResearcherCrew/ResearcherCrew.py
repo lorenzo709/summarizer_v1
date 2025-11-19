@@ -7,7 +7,7 @@ from crewai_tools import (
     ScrapeWebsiteTool,
     SerperDevTool,
 )
-from MyTypes import Paths_to_Papers, ParsedText, ParsedPapers
+from src.MyTypes import Paths_to_Papers, ParsedText, ParsedPapers
 from dotenv import load_dotenv
 
 from typing import List

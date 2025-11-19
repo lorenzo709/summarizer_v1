@@ -8,7 +8,7 @@ from crewai_tools import (
     SerperDevTool,
 )
 from dotenv import load_dotenv
-from MyTypes import Summary
+from src.MyTypes import Summary
 
 load_dotenv()
 

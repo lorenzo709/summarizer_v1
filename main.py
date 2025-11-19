@@ -13,12 +13,12 @@ from dotenv import load_dotenv
 import asyncio
 from pydantic import BaseModel
 
-from crews.AggregatorCrew.AggregatorCrew import AggregateCrew
-from crews.ResearcherCrew.ResearcherCrew import ResearcherCrew
-from crews.SummarizationCrew.SummarizationCrew import SummarizationCrew
-from crews.ReviewerCrew import ReviewerCrew
+from src.crews.AggregatorCrew.AggregatorCrew import AggregateCrew
+from src.crews.ResearcherCrew.ResearcherCrew import ResearcherCrew
+from src.crews.SummarizationCrew.SummarizationCrew import SummarizationCrew
+from src.crews.ReviewerCrew import ReviewerCrew
 
-from MyTypes import Paths_to_Papers, ParsedText, Summary, ProsCons
+from src.MyTypes import Paths_to_Papers, ParsedText, Summary, ProsCons
 from typing import List
 
 load_dotenv()

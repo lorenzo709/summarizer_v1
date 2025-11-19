@@ -10,7 +10,7 @@ from crewai_tools import (
 from dotenv import load_dotenv
 
 from tools.pdf_parser import PDFParserTool
-from MyTypes import Summary
+from src.MyTypes import Summary
 
 load_dotenv()
 
