@@ -23,7 +23,8 @@ from typing import List
 
 load_dotenv()
 
-llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
+# llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
+llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434")
 
 class ResearcherState(BaseModel):
     parsed_papers: List[ParsedText] = []
