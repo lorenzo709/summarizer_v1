@@ -7,15 +7,15 @@ from crewai_tools import (
     ScrapeWebsiteTool,
     SerperDevTool,
 )
-from src.MyTypes import Paths_to_Papers, ParsedText, ParsedPapers
+from src.MyTypes import ParsedText, ParsedPapers, PDFPapers
 from dotenv import load_dotenv
 
 from typing import List
 load_dotenv()
 
 from tools.pdf_parser import PDFParserTool
-# llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
-llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434")
+llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
+# llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434")
 
 @CrewBase 
 class ResearcherCrew:
@@ -54,13 +54,14 @@ class ResearcherCrew:
             # llm="gemini/gemini-2.0-flash",
             llm = llm,
             tools=[
-                PDFParserTool(),
+                # PDFParserTool(),
                 DirectoryReadTool()
             ],
             role="Scientific Papers Parser Specialist",
-            goal="For each path given in the output of the previous agent,Use"
-            "the PDFParserTool to extract text the PDF file in the knowledge"
-            "folder.",
+            # goal="For each path given in the output of the previous agent,Use"
+            # "the PDFParserTool to extract text the PDF file in the knowledge"
+            # "folder.",
+            goal= "for each paper found in folder 'knowledge', return both the name of that paper and the path where its saved",
             backstory=(
                 """ 
                 you are a specialist in parsing text from a PDF file into a precise, easily digestible text format
@@ -76,7 +77,6 @@ class ResearcherCrew:
         return Task(
             config=self.tasks_config["research_task"],  # type: ignore[index]
             agent=self.researcher(),
-            # output_pydantic=Paths_to_Papers
         )
     
     @task
@@ -84,7 +84,7 @@ class ResearcherCrew:
         return Task(
             config=self.tasks_config["scraper_task"],  # type: ignore[index]
             agent=self.parser(),
-            output_pydantic= ParsedPapers
+            output_pydantic= PDFPapers
         )
 
     @crew

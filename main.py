@@ -18,13 +18,11 @@ from src.crews.ResearcherCrew.ResearcherCrew import ResearcherCrew
 from src.crews.SummarizationCrew.SummarizationCrew import SummarizationCrew
 from src.crews.ReviewerCrew import ReviewerCrew
 
-from src.MyTypes import Paths_to_Papers, ParsedText, Summary, ProsCons
+from src.MyTypes import ParsedText, Summary, ProsCons
 from typing import List
+from tools.pdf_parser_no_tool_version import parser
 
 load_dotenv()
-
-# llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
-llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434")
 
 class ResearcherState(BaseModel):
     parsed_papers: List[ParsedText] = []
@@ -43,7 +41,30 @@ class ResearcherFlow(Flow[ResearcherState]):
             .kickoff(inputs={"topic": "llm for summarization"})
         )
 
-        self.state.parsed_papers = output["parsed_papers"]
+        # create a new class to store pdf_name and path
+        # class ParsedTextPos(Basemodel):
+        # paper_name: str
+        # path_paper: str
+        # output returned a list of parsed papers positions: List[ParsedTextPos]
+        # now i call my parsing function to extract the text
+        # parsed_papers = []
+        # papers_to_parse = output["parsed_papers"]
+        # for paper in papers_to_parse:
+        #     parsed_text = function_for_parsing(parsed_papers.paper_path)
+        #     pdf_name = paper.pdf_name
+        #     final_paper = ParsedText(pdf_name=pdf_name,parsed_text=parsed_text)
+        #     parsed_papers.append(final_paper)
+        # self.state.parsed_papers = parsed_papers
+
+        parsed_papers = []
+        papers_to_parse = output["papers"]
+        for paper in papers_to_parse:
+            parsed_text = parser(paper.pdf_path)
+            pdf_name = paper.pdf_name
+            final_paper = ParsedText(pdf_name=pdf_name,parsed_text=parsed_text)
+            parsed_papers.append(final_paper)
+        self.state.parsed_papers = parsed_papers
+        # self.state.parsed_papers = output["parsed_papers"]
 
     @listen(research_interesting_papers)
     async def summarize_papers(self):

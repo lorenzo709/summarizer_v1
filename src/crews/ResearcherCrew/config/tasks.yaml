@@ -13,12 +13,17 @@ research_task:
 
 scraper_task:
     description: >
-        recover the context of the scientific paper found in path (make sure to
-        use the DirectoryReadTool as well to see the path) using the custom tool
-        PDFParserTool.
-        For each PDF parsed you should also save the name of the paper
+        for each paper inside the folder 'knowledge', return the name of that paper and the path where its saved
         Example: knowledge/title_paper1.pdf
         pdf_name: title_paper1
-        parsed_text: <text of the paper>
+        pdf_path: knowledge/title_paper1.pdf
+    # description: >
+    #     recover the context of the scientific paper found in path (make sure to
+    #     use the DirectoryReadTool as well to see the path) using the custom tool
+    #     PDFParserTool.
+    #     For each PDF parsed you should also save the name of the paper
+    #     Example: knowledge/title_paper1.pdf
+    #     pdf_name: title_paper1
+    #     parsed_text: <text of the paper>
     expected_output: >
         A list of parsed pdf papers with the name of the papers

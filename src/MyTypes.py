@@ -2,8 +2,12 @@ from typing import List
 
 from pydantic import BaseModel
 
-class Paths_to_Papers(BaseModel):
-    paths: List[str]
+class PaperFound(BaseModel):
+    pdf_name: str 
+    pdf_path: str
+
+class PDFPapers(BaseModel):
+    papers: List[PaperFound]
 
 class ParsedText(BaseModel):
     pdf_name: str 
