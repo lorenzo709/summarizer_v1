@@ -46,6 +46,8 @@ class ResearcherFlow(Flow[ResearcherState]):
         for paper in papers_to_parse:
             parsed_text = parser(paper.pdf_path)
             pdf_name = paper.pdf_name
+            print(paper.pdf_path)
+            print(paper.pdf_name)
             final_paper = ParsedText(pdf_name=pdf_name,parsed_text=parsed_text)
             parsed_papers.append(final_paper)
         print(parsed_papers[0].parsed_text[:100])
