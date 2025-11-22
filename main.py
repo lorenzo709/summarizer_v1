@@ -41,21 +41,6 @@ class ResearcherFlow(Flow[ResearcherState]):
             .kickoff(inputs={"topic": "llm for summarization"})
         )
 
-        # create a new class to store pdf_name and path
-        # class ParsedTextPos(Basemodel):
-        # paper_name: str
-        # path_paper: str
-        # output returned a list of parsed papers positions: List[ParsedTextPos]
-        # now i call my parsing function to extract the text
-        # parsed_papers = []
-        # papers_to_parse = output["parsed_papers"]
-        # for paper in papers_to_parse:
-        #     parsed_text = function_for_parsing(parsed_papers.paper_path)
-        #     pdf_name = paper.pdf_name
-        #     final_paper = ParsedText(pdf_name=pdf_name,parsed_text=parsed_text)
-        #     parsed_papers.append(final_paper)
-        # self.state.parsed_papers = parsed_papers
-
         parsed_papers = []
         papers_to_parse = output["papers"]
         for paper in papers_to_parse:
@@ -63,6 +48,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             pdf_name = paper.pdf_name
             final_paper = ParsedText(pdf_name=pdf_name,parsed_text=parsed_text)
             parsed_papers.append(final_paper)
+        print(parsed_papers[0].parsed_text[:100])
         self.state.parsed_papers = parsed_papers
         # self.state.parsed_papers = output["parsed_papers"]
 
