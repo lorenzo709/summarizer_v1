@@ -3,27 +3,45 @@ research_task:
         find the 2 scientific papers on {topic}.
         Use the tool Arxiv Paper Fetcher and Downloader to find them on Arxiv and save them inside the knowledge folder
     expected_output: >
-        A list containing the paths to the pdf of the scientific paper downloaded.
+        A list containing the paths to the pdf of the scientific paper downloaded with the title of the pdf.
         A path is usually in this form: knowledge/title_paper.pdf
         Example: you found title_paper1.pdf and title_paper2.pdf 
-        Output:
-            knowledge/title_paper1.pdf,
-            knowledge/title_paper2.pdf,
-#         Confermation that 2 papers have been found.
-
-scraper_task:
-    description: >
-        for each paper inside the folder 'knowledge', return the name of that paper and the path where its saved
-        Example: knowledge/title_paper1.pdf
+        Output for a single paper:
         pdf_name: title_paper1
         pdf_path: knowledge/title_paper1.pdf
-    # description: >
-    #     recover the context of the scientific paper found in path (make sure to
-    #     use the DirectoryReadTool as well to see the path) using the custom tool
-    #     PDFParserTool.
-    #     For each PDF parsed you should also save the name of the paper
-    #     Example: knowledge/title_paper1.pdf
-    #     pdf_name: title_paper1
-    #     parsed_text: <text of the paper>
+#         Confermation that 2 papers have been found.
+
+organize_task:
+    description: >
+        Receive the result from the Arxiv Paper Fetcher, which contains the file paths 
+        of the downloaded scientific papers.
+        
+        For each paper path, extract the file name to use as the 'pdf_name'.
+        
+        The final output MUST be a Pydantic object of class PDFPapers, containing 
+        a list of PaperFound objects, where each object has the 'pdf_name' and the 
+        full 'pdf_path'.
+        
+        Example Input (from previous agent):
+        ['knowledge/LLMs_in_Summarization.pdf', 'knowledge/Scaling_Laws_for_LLMs.pdf']
+        
     expected_output: >
-        A list of parsed pdf papers with the name of the papers
+        A validated JSON object conforming to the 'PDFPapers' Pydantic model.
+        The output must be a single JSON object (not a list).
+
+# scraper_task:
+#     description: >
+#         for each paper inside the folder 'knowledge', return the name of that paper and the path where its saved
+#         Example: knowledge/title_paper1.pdf
+#         pdf_name: title_paper1
+#         pdf_path: knowledge/title_paper1.pdf
+#     # description: >
+#     #     recover the context of the scientific paper found in path (make sure to
+#     #     use the DirectoryReadTool as well to see the path) using the custom tool
+#     #     PDFParserTool.
+#     #     For each PDF parsed you should also save the name of the paper
+#     #     Example: knowledge/title_paper1.pdf
+#     #     pdf_name: title_paper1
+#     #     parsed_text: <text of the paper>
+#     expected_output: >
+#         A list of parsed pdf papers with the name of the papers

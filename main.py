@@ -40,7 +40,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             .crew()
             .kickoff(inputs={"topic": "llm for summarization"})
         )
-
+        print("CREW 1 FINISHED")
         parsed_papers = []
         papers_to_parse = output["papers"]
         for paper in papers_to_parse:

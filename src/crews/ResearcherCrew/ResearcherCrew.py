@@ -7,7 +7,7 @@ from crewai_tools import (
     ScrapeWebsiteTool,
     SerperDevTool,
 )
-from src.MyTypes import ParsedText, ParsedPapers, PDFPapers
+from src.MyTypes import ParsedText, ParsedPapers, PDFPapers,PaperFound
 from dotenv import load_dotenv
 
 from typing import List
@@ -48,29 +48,54 @@ class ResearcherCrew:
             verbose=True,
         )
 
+    # @agent
+    # def parser(self) -> Agent:
+    #     return Agent(
+    #         # llm="gemini/gemini-2.0-flash",
+    #         llm = llm,
+    #         tools=[
+    #             # PDFParserTool(),
+    #             DirectoryReadTool()
+    #         ],
+    #         role="Scientific Papers Parser Specialist",
+    #         # goal="For each path given in the output of the previous agent,Use"
+    #         # "the PDFParserTool to extract text the PDF file in the knowledge"
+    #         # "folder.",
+    #         goal= "for each paper found in folder 'knowledge', return both the name of that paper and the path where its saved",
+    #         backstory=(
+    #             """ 
+    #             you are a specialist in parsing text from a PDF file into a precise, easily digestible text format
+    #             for other experts to use.
+    #             """
+    #         ),
+    #         verbose=True
+    #     )   
+
     @agent
-    def parser(self) -> Agent:
+    def organizer(self) -> Agent:
         return Agent(
             # llm="gemini/gemini-2.0-flash",
             llm = llm,
-            tools=[
-                # PDFParserTool(),
+                tools=[
                 DirectoryReadTool()
             ],
-            role="Scientific Papers Parser Specialist",
-            # goal="For each path given in the output of the previous agent,Use"
-            # "the PDFParserTool to extract text the PDF file in the knowledge"
-            # "folder.",
-            goal= "for each paper found in folder 'knowledge', return both the name of that paper and the path where its saved",
+                role="The Data Structure Validator",
+            goal= """
+                To receive the output from the discovery agent (a list of downloaded paper
+                paths), extract the paper names, and produce a final, validated PDFPapers
+                Pydantic object containing the pdf_name and pdf_path for every paper found. The
+                primary objective is structured output fidelity."
+                """,
             backstory=(
                 """ 
-                you are a specialist in parsing text from a PDF file into a precise, easily digestible text format
-                for other experts to use.
+                I am an expert in data engineering and file system management. My training
+                focuses on Pydantic schema validation, ensuring data integrity, and confirming
+                the existence of files based on provided metadata. I prioritize precision and
+                strict adherence to output schemas over creative interpretation.
                 """
             ),
             verbose=True
         )   
-
 
     @task
     def research_task(self) -> Task:
@@ -80,17 +105,17 @@ class ResearcherCrew:
         )
     
     @task
-    def scrape_task(self) -> Task:
+    def organize_task(self) -> Task:
         return Task(
-            config=self.tasks_config["scraper_task"],  # type: ignore[index]
-            agent=self.parser(),
+            config=self.tasks_config["organize_task"],  # type: ignore[index]
+            agent=self.organizer(),
             output_pydantic= PDFPapers
         )
 
     @crew
     def crew(self) -> Crew:
         return Crew(
-            agents=[self.researcher(),self.parser()],
-            tasks=[self.research_task(),self.scrape_task()],
+            agents=[self.researcher(),self.organizer()],
+            tasks=[self.research_task(),self.organize_task()],
             process=Process.sequential,
         )
