@@ -32,7 +32,7 @@ class ResearcherCrew:
                     save_dir="./knowledge",
                     use_title_as_filename=True,
                 ),
-                DirectoryReadTool()
+                # DirectoryReadTool()
             ],
             # llm="gemini/gemini-2.0-flash",
             llm=llm,
@@ -102,7 +102,6 @@ class ResearcherCrew:
         return Task(
             config=self.tasks_config["research_task"],  # type: ignore[index]
             agent=self.researcher(),
-            output_pydantic= PDFPapers
         )
     
     @task

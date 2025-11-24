@@ -13,15 +13,13 @@ research_task:
 
 organize_task:
     description: >
-        Read inside the folder 'knowledge'
+        Read inside the folder 'knowledge' using the tool you have
 
-        For each paper path, extract the file name to use as the 'pdf_name'.
+        For each PDF file, return the name of the file and the path where it is saved
         
         The final output MUST be a Pydantic object of class PDFPapers, containing 
         a list of PaperFound objects, where each object has the 'pdf_name' and the 
         full 'pdf_path'.
-        
-        Make sure to check the correct paths by using your DirectoryReadTool
 #        Example Input (from previous agent):
 #        ['knowledge/LLMs_in_Summarization.pdf', 'knowledge/Scaling_Laws_for_LLMs.pdf']
     expected_output: >
