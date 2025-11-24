@@ -43,7 +43,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         # print("CREW 1 FINISHED")
         parsed_papers = []
         # papers_to_parse = output["papers"]
-        papers_to_parse = List[PaperFound] = [
+        papers_to_parse = [
         PaperFound(
         pdf_name="Indian Language Summarization",
         pdf_path="knowledge/Indian Language Summarization using Pretrained Sequence-to-Sequence Models.pdf"
