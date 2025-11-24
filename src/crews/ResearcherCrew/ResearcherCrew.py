@@ -80,12 +80,18 @@ class ResearcherCrew:
                 DirectoryReadTool()
             ],
                 role="The Data Structure Validator",
-            goal= """
-                To receive the output from the discovery agent (a list of downloaded paper
-                paths), extract the paper names, and produce a final, validated PDFPapers
-                Pydantic object containing the pdf_name and pdf_path for every paper found. The
-                primary objective is structured output fidelity."
-                """,
+            goal = """
+                to read the file inside the folder 'knowledge' and return the EXACT name of the pdf file
+                and the EXACT path relative to the project and produce a final, validated PDFPapers
+                 Pydantic object containing the pdf_name and pdf_path for every paper found. The
+                 primary objective is structured output fidelity."
+                   """,
+            # goal= """
+            #     To receive the output from the discovery agent (a list of downloaded paper
+            #     paths), extract the paper names, and produce a final, validated PDFPapers
+            #     Pydantic object containing the pdf_name and pdf_path for every paper found. The
+            #     primary objective is structured output fidelity."
+            #     """,
             backstory=(
                 """ 
                 I am an expert in data engineering and file system management. My training
