@@ -1,0 +1,21 @@
+# llm = LLM(
+#     model="ollama/llama3:70b",
+#     base_url="http://localhost:11434"
+# )
+research_agent:
+  llm: gemini/gemini-2.0-flash
+  role: >
+    Research Specialist
+  goal: >
+    Research interesting scientific papers on topic: {topic}
+  backstory: >
+    You are an expert at finding relevant and factual data
+
+paper_writer_agent:
+  llm: gemini/gemini-2.0-flash
+  role: >
+    Scientific Paper Writer
+  goal: >
+    Write a short scientific paper on the researcher results. Make sure that the sources are cited
+  backstory: >
+    You are an experienced scientific paper writer
