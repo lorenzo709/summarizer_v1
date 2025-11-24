@@ -18,7 +18,7 @@ from src.crews.ResearcherCrew.ResearcherCrew import ResearcherCrew
 from src.crews.SummarizationCrew.SummarizationCrew import SummarizationCrew
 from src.crews.ReviewerCrew.ReviewerCrew import ReviewerCrew
 
-from src.MyTypes import ParsedText, Summary, ProsCons
+from src.MyTypes import ParsedText, Summary, ProsCons, PaperFound
 from typing import List
 from tools.pdf_parser_no_tool_version import parser
 
@@ -33,16 +33,26 @@ class ResearcherFlow(Flow[ResearcherState]):
     
     @start()
     def research_interesting_papers(self):
-        print("Starting to look for interesting papers on topic")
+        # print("Starting to look for interesting papers on topic")
 
-        output = (
-            ResearcherCrew()
-            .crew()
-            .kickoff(inputs={"topic": "llm for summarization"})
-        )
-        print("CREW 1 FINISHED")
+        # output = (
+        #     ResearcherCrew()
+        #     .crew()
+        #     .kickoff(inputs={"topic": "llm for summarization"})
+        # )
+        # print("CREW 1 FINISHED")
         parsed_papers = []
-        papers_to_parse = output["papers"]
+        # papers_to_parse = output["papers"]
+        papers_to_parse = List[PaperFound] = [
+        PaperFound(
+        pdf_name="Indian Language Summarization",
+        pdf_path="knowledge/Indian Language Summarization using Pretrained Sequence-to-Sequence Models.pdf"
+        ),
+        PaperFound(
+        pdf_name="QA-prompting_ Improving Summarization with Large Language Models using Question-Answering",
+        pdf_path="knowledge/QA-prompting_ Improving Summarization with Large Language Models using Question-Answering.pdf"
+    )
+        ]
         for paper in papers_to_parse:
             parsed_text = parser(paper.pdf_path)
             pdf_name = paper.pdf_name
