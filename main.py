@@ -16,7 +16,7 @@ from pydantic import BaseModel
 from src.crews.AggregatorCrew.AggregatorCrew import AggregateCrew
 from src.crews.ResearcherCrew.ResearcherCrew import ResearcherCrew
 from src.crews.SummarizationCrew.SummarizationCrew import SummarizationCrew
-from src.crews.ReviewerCrew import ReviewerCrew
+from src.crews.ReviewerCrew.ReviewerCrew import ReviewerCrew
 
 from src.MyTypes import ParsedText, Summary, ProsCons
 from typing import List
