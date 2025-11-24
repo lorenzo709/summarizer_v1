@@ -22,7 +22,7 @@ organize_task:
         a list of PaperFound objects, where each object has the 'pdf_name' and the 
         full 'pdf_path'.
         
-        Make sure to have the correct paths by using your DirectoryReadTool
+        Make sure to check the correct paths by using your DirectoryReadTool
 
         Example Input (from previous agent):
         ['knowledge/LLMs_in_Summarization.pdf', 'knowledge/Scaling_Laws_for_LLMs.pdf']
