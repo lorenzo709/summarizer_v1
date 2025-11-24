@@ -128,7 +128,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         final_result = output["summary"]
         print(final_result)
         for pro_and_con in self.state.pros_and_cons:
-            print(pro_and_con.pdf_title)
+            print(pro_and_con.paper_name)
             print(pro_and_con.pros_and_cons)
 
 def kickoff():
