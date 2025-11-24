@@ -13,7 +13,7 @@ research_task:
 
 organize_task:
     description: >
-        Read inside the folder 'knowledge' using the tool you have
+        Read inside the folder 'knowledge' using the tool DirectoryReadTool()
 
         For each PDF file, return the name of the file and the path where it is saved
         
