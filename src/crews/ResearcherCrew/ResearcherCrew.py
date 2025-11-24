@@ -77,7 +77,7 @@ class ResearcherCrew:
             # llm="gemini/gemini-2.0-flash",
             llm = llm,
                 tools=[
-                DirectoryReadTool()
+                DirectoryReadTool(directory="knowledge/")
             ],
                 role="The Data Structure Validator",
             goal = """
