@@ -71,31 +71,31 @@ class ResearcherCrew:
     #         verbose=True
     #     )   
 
-    # @agent
-    # def organizer(self) -> Agent:
-    #     return Agent(
-    #         # llm="gemini/gemini-2.0-flash",
-    #         llm = llm,
-    #             tools=[
-    #             DirectoryReadTool()
-    #         ],
-    #             role="The Data Structure Validator",
-    #         goal= """
-    #             To receive the output from the discovery agent (a list of downloaded paper
-    #             paths), extract the paper names, and produce a final, validated PDFPapers
-    #             Pydantic object containing the pdf_name and pdf_path for every paper found. The
-    #             primary objective is structured output fidelity."
-    #             """,
-    #         backstory=(
-    #             """ 
-    #             I am an expert in data engineering and file system management. My training
-    #             focuses on Pydantic schema validation, ensuring data integrity, and confirming
-    #             the existence of files based on provided metadata. I prioritize precision and
-    #             strict adherence to output schemas over creative interpretation.
-    #             """
-    #         ),
-    #         verbose=True
-    #     )   
+    @agent
+    def organizer(self) -> Agent:
+        return Agent(
+            # llm="gemini/gemini-2.0-flash",
+            llm = llm,
+                tools=[
+                DirectoryReadTool()
+            ],
+                role="The Data Structure Validator",
+            goal= """
+                To receive the output from the discovery agent (a list of downloaded paper
+                paths), extract the paper names, and produce a final, validated PDFPapers
+                Pydantic object containing the pdf_name and pdf_path for every paper found. The
+                primary objective is structured output fidelity."
+                """,
+            backstory=(
+                """ 
+                I am an expert in data engineering and file system management. My training
+                focuses on Pydantic schema validation, ensuring data integrity, and confirming
+                the existence of files based on provided metadata. I prioritize precision and
+                strict adherence to output schemas over creative interpretation.
+                """
+            ),
+            verbose=True
+        )   
 
     @task
     def research_task(self) -> Task:
@@ -105,18 +105,18 @@ class ResearcherCrew:
             output_pydantic= PDFPapers
         )
     
-    # @task
-    # def organize_task(self) -> Task:
-    #     return Task(
-    #         config=self.tasks_config["organize_task"],  # type: ignore[index]
-    #         agent=self.organizer(),
-    #         output_pydantic= PDFPapers
-    #     )
+    @task
+    def organize_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["organize_task"],  # type: ignore[index]
+            agent=self.organizer(),
+            output_pydantic= PDFPapers
+        )
 
     @crew
     def crew(self) -> Crew:
         return Crew(
-            agents=[self.researcher()],#,self.organizer()],
-            tasks=[self.research_task()],#,self.organize_task()],
+            agents=[self.researcher(),self.organizer()],
+            tasks=[self.research_task(),self.organize_task()],
             process=Process.sequential,
         )
