@@ -9,7 +9,7 @@ from crewai_tools import (
 )
 from dotenv import load_dotenv
 
-from MyTypes import Summary
+from src.MyTypes import Summary
 load_dotenv()
 
 # llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
