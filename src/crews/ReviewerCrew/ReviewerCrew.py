@@ -9,7 +9,7 @@ from crewai_tools import (
 )
 from dotenv import load_dotenv
 
-
+from MyTypes import Summary
 load_dotenv()
 
 # llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
@@ -41,18 +41,16 @@ class ReviewerCrew:
         return Task(
             config=self.tasks_config["reviewer_task"],  # type: ignore[index]
             agent=self.reviewer(),
+            output_pydantic= Summary
         )
 
     @crew
     def crew(self) -> Crew:
         return Crew(
             agents=[
-                # self.writer(),
                 self.reviewer(),
             ],
             tasks=[
-                # self.scrape_task(),
-                # self.summarize_task(),
                 self.reviewer_task(),
             ],
             process=Process.sequential,

@@ -1,6 +1,6 @@
 from crewai import LLM, Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai.flow.flow import Flow, listen, start
+from crewai.flow.flow import Flow, listen, start, and_
 from crewai_tools import (
     ArxivPaperTool,
     DirectoryReadTool,
@@ -27,7 +27,7 @@ load_dotenv()
 class ResearcherState(BaseModel):
     parsed_papers: List[ParsedText] = []
     summaries: List[Summary] = []
-    # pros_and_cons: List[ProsCons]
+    pros_and_cons: List[ProsCons] = []
 
 class ResearcherFlow(Flow[ResearcherState]):
     
@@ -77,8 +77,32 @@ class ResearcherFlow(Flow[ResearcherState]):
         summaries = await asyncio.gather(*tasks)
         print("finished writing all the summaries")
         self.state.summaries.extend(summaries)
+
+    @listen(research_interesting_papers)
+    async def review_papers(self):
+        print("starting reviewing the papers")
+        tasks = []
+
+        async def write_single_review(parsed_text):
+            output = (
+                ReviewerCrew()
+                .crew()
+                .kickoff( inputs={ "paper": parsed_text.parsed_text } )
+            )
+            pro_con = output["summary"]
+            pdf_title = parsed_text.pdf_name
+            pro_and_con = ProsCons(pdf_title=pdf_title,pros_and_cons=pro_con)
+            return pro_and_con
         
-    @listen(summarize_papers)
+        for raw_paper in self.state.parsed_papers:
+            task = asyncio.create_task(write_single_review(raw_paper))
+            tasks.append(task)
+
+        pros_and_cons = await asyncio.gather(*tasks)
+        print("finished writing all the reviews")
+        self.state.pros_and_cons.extend(pros_and_cons)
+        
+    @listen(and_(summarize_papers,review_papers))
     async def aggregate_results(self):
         print("Aggregating all the summarises in a single block")
         all_summaries_string = [summary.summary for summary in self.state.summaries]
@@ -93,6 +117,9 @@ class ResearcherFlow(Flow[ResearcherState]):
         )
         final_result = output["summary"]
         print(final_result)
+        for pro_and_con in self.state.pros_and_cons:
+            print(pro_and_con.pdf_title)
+            print(pro_and_con.pros_and_cons)
 
 def kickoff():
     researcher_flow= ResearcherFlow()
