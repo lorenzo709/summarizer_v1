@@ -101,7 +101,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             )
             pro_con = output["summary"]
             pdf_title = parsed_text.pdf_name
-            pro_and_con = ProsCons(pdf_title=pdf_title,pros_and_cons=pro_con)
+            pro_and_con = ProsCons(paper_name=pdf_title,pros_and_cons=pro_con)
             return pro_and_con
         
         for raw_paper in self.state.parsed_papers:
