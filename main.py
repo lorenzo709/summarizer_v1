@@ -38,7 +38,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         output = (
             ResearcherCrew()
             .crew()
-            .kickoff(inputs={"topic": "llm for summarization"})
+            .kickoff(inputs={"topic": "agent as a service"})
         )
         print("CREW 1 FINISHED")
         parsed_papers = []
