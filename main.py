@@ -38,7 +38,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         output = (
             ResearcherCrew()
             .crew()
-            .kickoff(inputs={"topic": "llm in medicine"})
+            .kickoff(inputs={"topic": "Mixture of Experts (MoE) models"})
         )
         print("CREW 1 FINISHED")
         parsed_papers = []
