@@ -35,24 +35,24 @@ class ResearcherFlow(Flow[ResearcherState]):
     def research_interesting_papers(self):
         print("Starting to look for interesting papers on topic")
 
-        # output = (
-        #     ResearcherCrew()
-        #     .crew()
-        #     .kickoff(inputs={"topic": "Mixture of Experts (MoE) models"})
-        # )
-        # print("CREW 1 FINISHED")
+        output = (
+            ResearcherCrew()
+            .crew()
+            .kickoff(inputs={"topic": "Vision Transformers (ViT)"})
+        )
+        print("CREW 1 FINISHED")
         parsed_papers = []
-        # papers_to_parse = output["papers"]
-        papers_to_parse = [
-        PaperFound(
-        pdf_name="ExpertFlow",
-        pdf_path="knowledge/ExpertFlow_ Optimized Expert Activation and Token Allocation for Efficient Mixture-of-Experts Inference.pdf"
-        ),
-        PaperFound(
-        pdf_name="Not All Experts are Equal",
-        pdf_path="knowledge/Not All Experts are Equal_ Efficient Expert Pruning and Skipping for Mixture-of-Experts Large Language Models.pdf"
-    )
-        ]
+        papers_to_parse = output["papers"]
+    #     papers_to_parse = [
+    #     PaperFound(
+    #     pdf_name="ExpertFlow",
+    #     pdf_path="knowledge/ExpertFlow_ Optimized Expert Activation and Token Allocation for Efficient Mixture-of-Experts Inference.pdf"
+    #     ),
+    #     PaperFound(
+    #     pdf_name="Not All Experts are Equal",
+    #     pdf_path="knowledge/Not All Experts are Equal_ Efficient Expert Pruning and Skipping for Mixture-of-Experts Large Language Models.pdf"
+    # )
+        # ]
         for paper in papers_to_parse:
             parsed_text = parser(paper.pdf_path)
             pdf_name = paper.pdf_name
