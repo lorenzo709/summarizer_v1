@@ -16,7 +16,7 @@ organize_task:
     description: >
         Read inside the folder 'knowledge' using the tool DirectoryReadTool()
 
-        For each PDF file, return the name of the file and the path where it is saved
+        For each PDF file, return the name of the file and the **EXACT** path where it is saved
         
         The final output MUST be a Pydantic object of class PDFPapers, containing 
         a list of PaperFound objects, where each object has the 'pdf_name' and the 
