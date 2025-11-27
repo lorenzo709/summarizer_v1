@@ -40,7 +40,7 @@ class ResearcherCrew:
             goal="Accurately search the internet to find scientific papers on a"
             "{topic} and use tools such as ArxivPaperTool to download the PDF in"
             "a specific folder"
-            "NOTE: YOU MUST USE THE TOOL Arxiv Paper Fetcher and Downloader TO SEARCH THE WEB",
+            "NOTE: YOU **MUST** SEARCH THE WEB AND USE THE TOOL Arxiv Paper Fetcher and Downloader",
             backstory=(
                 "You are a meticulous researcher, and your primary function is "
                 "to use your search tool to gather data, and your "
