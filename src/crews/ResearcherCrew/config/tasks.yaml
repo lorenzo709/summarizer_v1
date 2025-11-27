@@ -2,6 +2,7 @@ research_task:
     description: >
         find the 2 scientific papers on {topic}.
         Use the tool Arxiv Paper Fetcher and Downloader to find them on Arxiv and save them inside the knowledge folder
+        NOTE: YOU MUST USE THE TOOL Arxiv Paper Fetcher and Downloader TO SEARCH THE WEB
     expected_output: >
         A list containing the paths to the pdf of the scientific paper downloaded with the title of the pdf.
         A path is usually in this form: knowledge/title_paper.pdf
