@@ -39,7 +39,8 @@ class ResearcherCrew:
             role="Scientific Papers Researcher Specialist",
             goal="Accurately search the internet to find scientific papers on a"
             "{topic} and use tools such as ArxivPaperTool to download the PDF in"
-            "a specific folder",
+            "a specific folder"
+            "NOTE: YOU MUST USE THE TOOL ARXIVPAPERTOOL TO SEARCH THE WEB",
             backstory=(
                 "You are a meticulous researcher, and your primary function is "
                 "to use your search tool to gather data, and your "
