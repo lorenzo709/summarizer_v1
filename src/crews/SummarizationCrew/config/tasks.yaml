@@ -2,5 +2,10 @@ summarize_task:
     description: >
         Summarize this scientific paper:
         {paper}
+    # expected_output: >
+    #     a consice and continuos text containing all the important informations from the paper
     expected_output: >
-        a consice and continuos text containing all the important informations from the paper
+        A single, continuous text that is approximately **400-500 words** long. The summary must be written in an **academic style** (similar to a 'Related Work' section) and must cover the paper's:
+        1. **Main Goal and Contribution.**
+        2. **Methodology and Key Results.**
+        3. **A clear analysis of the paper's limitations, shortcomings, and potential biases.**
