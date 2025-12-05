@@ -1,0 +1,19 @@
+research_gap_task:
+    description: >
+        Analyze the following aggregated limitations and shortcomings from a series of papers
+        centered around the topic of {topic}:
+        
+        {pro_limitation_points_input}
+        
+        Systematically categorize the common or recurring gaps in Methodology, Data, Scope, or Theory.
+    
+    expected_output: >
+        A structured, continuous text report.
+        
+        The report must first present a **Synthesis of the Gaps** (1-2 paragraphs), followed by a bulleted list titled 
+        **'High-Impact Research Opportunities'**.
+        
+        Each opportunity in the list must be:
+        1. Clearly articulated as a research question or proposal.
+        2. Directly justified by the aggregated shortcomings found in the input.
+        3. Focused on advancing the field by filling a major 'hole' in the current State-of-the-Art.
