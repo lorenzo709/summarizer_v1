@@ -37,25 +37,33 @@ class ResearcherFlow(Flow[ResearcherState]):
     @start()
     def research_interesting_papers(self):
         print("Starting to look for interesting papers on topic")
-        self.state.topic = "Vision Transformers (ViT)"
-        output = (
-            ResearcherCrew()
-            .crew()
-            .kickoff(inputs={"topic":self.state.topic})
-        )
-        print("CREW 1 FINISHED")
+        # self.state.topic = "Vision Transformers (ViT)"
+        # output = (
+        #     ResearcherCrew()
+        #     .crew()
+        #     .kickoff(inputs={"topic":self.state.topic})
+        # )
+        # print("CREW 1 FINISHED")
         parsed_papers = []
-        papers_to_parse = output["papers"]
-    #     papers_to_parse = [
-    #     PaperFound(
-    #     pdf_name="ExpertFlow",
-    #     pdf_path="knowledge/ExpertFlow_ Optimized Expert Activation and Token Allocation for Efficient Mixture-of-Experts Inference.pdf"
-    #     ),
-    #     PaperFound(
-    #     pdf_name="Not All Experts are Equal",
-    #     pdf_path="knowledge/Not All Experts are Equal_ Efficient Expert Pruning and Skipping for Mixture-of-Experts Large Language Models.pdf"
-    # )
-        # ]
+        # papers_to_parse = output["papers"]
+        papers_to_parse = [
+        PaperFound(
+        pdf_name="Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf",
+        pdf_path="knowledge/Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf"
+        ),
+        PaperFound(
+        pdf_name="PatchRot_ A Self-Supervised Technique for Training Vision Transformers.pdf",
+        pdf_path="knowledge/PatchRot_ A Self-Supervised Technique for Training Vision Transformers.pdf"
+        ),
+        PaperFound(
+        pdf_name="Vicinity Vision Transformer.pdf",
+        pdf_path="knowledge/Vicinity Vision Transformer.pdf"
+        ),
+        PaperFound(
+        pdf_name="Vision Transformer with Quadrangle Attention.pdf",
+        pdf_path="knowledge/Vision Transformer with Quadrangle Attention.pdf"
+        ),
+        ]
         for paper in papers_to_parse:
             parsed_text = parser(paper.pdf_path)
             pdf_name = paper.pdf_name
