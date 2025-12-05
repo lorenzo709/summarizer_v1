@@ -144,7 +144,6 @@ class ResearcherFlow(Flow[ResearcherState]):
                 inputs={"summaries": all_summaries}
             )
         )
-        final_result = output["summary"]
         print("--- INDIVIDUAL PAPER ANALYSIS ---")
         print("-" * 35)
         # Assuming the lists are ordered consistently by paper.
@@ -179,13 +178,11 @@ class ResearcherFlow(Flow[ResearcherState]):
 
         # 4. Print Final Summary (from the Agent's output)
         # This typically represents the overall synthesis or conclusion.
-        final_summary = output.get("summary", "N/A (Final Summary field missing)")
+        final_summary = output["summary"]
         print(f"Final Summary: {final_summary}")
 
         # 5. Print Gaps in SOTA
-        # Assuming gaps_in_SOTA is a single Summary object defined in your state
-        gaps_in_sota_text = self.state.gaps_in_SOTA.summary if self.state.gaps_in_SOTA else "N/A (Gaps in SOTA not yet defined or empty)"
-        print(f"Gaps in SOTA: {gaps_in_sota_text}")
+        print(f"Gaps in SOTA: {self.state.gaps_in_SOTA}")
 
         print("-" * 35)
 
