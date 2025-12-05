@@ -30,7 +30,7 @@ class AggregateCrew:
             # llm="gemini/gemini-2.0-flash",
             role="Expert Summarization WriterAcademic Synthesizer and Narrative Editor",
             goal="""To generate a single, continuous, and easy-to-read document
-            (400–600 words) that seamlessly integrates the content of 5–6
+            (400–500 words) that seamlessly integrates the content of several
             individual paper summaries, ensuring a logical progression of ideas
             from start to finish.
             """,

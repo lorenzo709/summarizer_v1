@@ -10,10 +10,12 @@ research_gap_task:
     expected_output: >
         A structured, continuous text report.
         
-        The report must first present a **Synthesis of the Gaps** (1-2 paragraphs), followed by a bulleted list titled 
-        **'High-Impact Research Opportunities'**.
-        
+        The report must be formet by a bulleted list title **'High-Impact Research Opportunities'**.
+
         Each opportunity in the list must be:
         1. Clearly articulated as a research question or proposal.
         2. Directly justified by the aggregated shortcomings found in the input.
         3. Focused on advancing the field by filling a major 'hole' in the current State-of-the-Art.
+
+#        The report must first present a **Synthesis of the Gaps** (1-2 paragraphs), followed by a bulleted list titled 
+#        **'High-Impact Research Opportunities'**.
