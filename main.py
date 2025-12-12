@@ -165,7 +165,8 @@ class ResearcherFlow(Flow[ResearcherState]):
         score = output_judge["score"]
         hints = output_judge["hints"]
 
-        if score < 5:
+        times_final_summary_judged = 0
+        while score < 5 and times_final_summary_judged < 2:
             output = (
                 AggregateCrew()
                 .crew()
@@ -183,6 +184,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             )
             score = output_judge["score"]
             hints = output_judge["hints"]
+            times_final_summary_judged += 1
         
         print("--- INDIVIDUAL PAPER ANALYSIS ---")
         print("-" * 35)
