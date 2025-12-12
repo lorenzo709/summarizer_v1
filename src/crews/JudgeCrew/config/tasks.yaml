@@ -1,0 +1,18 @@
+judge_task:
+    description: >
+      Meticulously assess a final scientific summary against its source material based on two critical criteria:
+      1.  **Alignment (Precision/Faithfulness):** Check every claim in the 'final_summary' against the 'source_summaries'. Identify any factual errors or unsupported claims (hallucinations).
+      2.  **Coverage (Recall):** Ensure all essential information, key findings, and crucial conclusions from the 'source_summaries' are accurately reflected in the 'final_summary'.
+
+      You must provide a single numerical score from 0 to 5.
+
+      **Inputs Provided:**
+      - source_summaries: {source summaries}
+      - final_summary: {final summary}
+    expected_output: >
+      A score from 0 to 5 measuring how much the final summary respect the criteria.
+      If the score is less than 5(<5), then also return **Correction Hints** 
+      **Correction Hint**: Provide concise, actionable advice on how to modify
+      the final summary to address the Alignment and/or Coverage issues
+      identified above and achieve a score of 5. Be specific about what needs
+      to be added, removed, or rephrased.

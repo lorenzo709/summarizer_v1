@@ -22,3 +22,7 @@ class Summary(BaseModel):
 class ProsCons(BaseModel):
     paper_name: str
     pros_and_cons: str
+
+class Score(BaseModel):
+    score: int
+    hints: str
