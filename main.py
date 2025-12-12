@@ -18,8 +18,9 @@ from src.crews.ResearcherCrew.ResearcherCrew import ResearcherCrew
 from src.crews.SummarizationCrew.SummarizationCrew import SummarizationCrew
 from src.crews.ReviewerCrew.ReviewerCrew import ReviewerCrew
 from src.crews.GapResearcherCrew.GapResearcherCrew import GapResearcherCrew
+from src.crews.JudgeCrew.JudgeCrew import JudgeCrew
 
-from src.MyTypes import ParsedText, Summary, ProsCons, PaperFound
+from src.MyTypes import ParsedText, Summary, ProsCons, PaperFound, Score
 from typing import List
 from tools.pdf_parser_no_tool_version import parser
 
@@ -149,9 +150,40 @@ class ResearcherFlow(Flow[ResearcherState]):
             AggregateCrew()
             .crew()
             .kickoff(
-                inputs={"summaries": all_summaries}
+                inputs={"summaries": all_summaries, "hints":""}
             )
         )
+        final_summary = output["summary"]
+
+        output_judge = (
+            JudgeCrew()
+            .crew()
+            .kickoff(
+                inputs={"source summaries": all_summaries, "final summary": final_summary}
+            )
+        )
+        score = output_judge["score"]
+        hints = output_judge["hints"]
+
+        if score < 5:
+            output = (
+                AggregateCrew()
+                .crew()
+                .kickoff(
+                    inputs={"summaries": all_summaries, "hints":hints}
+                )
+            )
+            final_summary = output["summary"]
+            output_judge = (
+                JudgeCrew()
+                .crew()
+                .kickoff(
+                    inputs={"source summaries": all_summaries, "final summary": final_summary}
+                )
+            )
+            score = output_judge["score"]
+            hints = output_judge["hints"]
+        
         print("--- INDIVIDUAL PAPER ANALYSIS ---")
         print("-" * 35)
         # Assuming the lists are ordered consistently by paper.
@@ -186,7 +218,6 @@ class ResearcherFlow(Flow[ResearcherState]):
 
         # 4. Print Final Summary (from the Agent's output)
         # This typically represents the overall synthesis or conclusion.
-        final_summary = output["summary"]
         print(f"Final Summary: {final_summary}")
 
         # 5. Print Gaps in SOTA

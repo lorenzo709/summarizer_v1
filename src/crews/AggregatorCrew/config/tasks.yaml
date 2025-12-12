@@ -2,5 +2,7 @@ aggregate_task:
     description: >
         Aggregate the following summaries:
         {summaries}
+
+        hints: {hints}
     expected_output: >
         A final text aggregating all the Summarize into a continuos ad easy to read text 
