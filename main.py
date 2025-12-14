@@ -109,7 +109,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             output = (
                 ReviewerCrew()
                 .crew()
-                .kickoff( inputs={ "paper": parsed_text.parsed_text } )
+                .akickoff( inputs={ "paper": parsed_text.parsed_text } ) #CHANGED kickoff to akickoff
             )
             pro_con = output["summary"]
             pdf_title = parsed_text.pdf_name
