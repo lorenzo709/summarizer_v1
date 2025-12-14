@@ -154,7 +154,8 @@ class ResearcherFlow(Flow[ResearcherState]):
             )
         )
         final_summary = output["summary"]
-
+        print("INITIAL FINAL SUMMARY:\n")
+        print(final_summary)
         output_judge = (
             JudgeCrew()
             .crew()
