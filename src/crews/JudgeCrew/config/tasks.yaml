@@ -7,8 +7,8 @@ judge_task:
       You must provide a single numerical score from 0 to 5.
 
       **Inputs Provided:**
-      - source_summaries: {source summaries}
-      - final_summary: {final summary}
+      - source_summaries: {source_summaries}
+      - final_summary: {final_summary}
     expected_output: >
       A score from 0 to 5 measuring how much the final summary respect the criteria.
       If the score is less than 5(<5), then also return **Correction Hints** 

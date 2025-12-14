@@ -159,7 +159,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             JudgeCrew()
             .crew()
             .kickoff(
-                inputs={"source summaries": all_summaries, "final summary": final_summary}
+                inputs={"source_summaries": all_summaries, "final_summary": final_summary}
             )
         )
         score = output_judge["score"]
