@@ -85,7 +85,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             output = (
                 SummarizationCrew()
                 .crew()
-                .kickoff( inputs={ "paper": parsed_text.parsed_text } ) 
+                .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
             summ = output["summary"]
             print(summ)
@@ -109,7 +109,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             output = (
                 ReviewerCrew()
                 .crew()
-                .kickoff( inputs={ "paper": parsed_text.parsed_text } ) 
+                .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
             pro_con = output["summary"]
             pdf_title = parsed_text.pdf_name
