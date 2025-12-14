@@ -1,6 +1,6 @@
 research_task:
     description: >
-        find 4 scientific papers on {topic}.
+        find 6 scientific papers on {topic}.
         Use the tool "Arxiv Paper Fetcher and Downloader" to find them on Arxiv and save them inside the knowledge folder
         NOTE: YOU MUST USE THE TOOL Arxiv Paper Fetcher and Downloader TO SEARCH THE WEB
     expected_output: >
