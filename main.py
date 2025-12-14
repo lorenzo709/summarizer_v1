@@ -85,7 +85,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             output = (
                 SummarizationCrew()
                 .crew()
-                .kickoff( inputs={ "paper": parsed_text.parsed_text } )
+                .akickoff( inputs={ "paper": parsed_text.parsed_text } )
             )
             summ = output["summary"]
             print(summ)
