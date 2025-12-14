@@ -48,14 +48,14 @@ class ResearcherFlow(Flow[ResearcherState]):
         parsed_papers = []
         # papers_to_parse = output["papers"]
         papers_to_parse = [
-        PaperFound(
-        pdf_name="Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf",
-        pdf_path="knowledge/Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf"
-        ),
-        PaperFound(
-        pdf_name="PatchRot_ A Self-Supervised Technique for Training Vision Transformers.pdf",
-        pdf_path="knowledge/PatchRot_ A Self-Supervised Technique for Training Vision Transformers.pdf"
-        ),
+        # PaperFound(
+        # pdf_name="Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf",
+        # pdf_path="knowledge/Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf"
+        # ),
+        # PaperFound(
+        # pdf_name="PatchRot_ A Self-Supervised Technique for Training Vision Transformers.pdf",
+        # pdf_path="knowledge/PatchRot_ A Self-Supervised Technique for Training Vision Transformers.pdf"
+        # ),
         PaperFound(
         pdf_name="Vicinity Vision Transformer.pdf",
         pdf_path="knowledge/Vicinity Vision Transformer.pdf"
