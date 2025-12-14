@@ -3,6 +3,6 @@ aggregate_task:
         Aggregate the following summaries:
         {summaries}
 
-        hints: {hints}
+        Correction hints: {hints}
     expected_output: >
         A final text aggregating all the Summarize into a continuos ad easy to read text 
