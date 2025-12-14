@@ -82,7 +82,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         tasks = []
 
         async def write_single_summary(parsed_text):
-            output = (
+            output = await( #CHANGED HERE
                 SummarizationCrew()
                 .crew()
                 .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
@@ -106,7 +106,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         tasks = []
 
         async def write_single_review(parsed_text):
-            output = (
+            output = await( #CHANGED HERE
                 ReviewerCrew()
                 .crew()
                 .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
