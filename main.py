@@ -24,6 +24,7 @@ from src.MyTypes import ParsedText, Summary, ProsCons, PaperFound, Score
 from typing import List
 from tools.pdf_parser_no_tool_version import parser
 
+from pathlib import Path
 load_dotenv()
 
 class ResearcherState(BaseModel):
@@ -38,15 +39,16 @@ class ResearcherFlow(Flow[ResearcherState]):
     @start()
     def research_interesting_papers(self):
         print("Starting to look for interesting papers on topic")
-        self.state.topic = "Vision Transformers (ViT)"
-        output = (
-            ResearcherCrew()
-            .crew()
-            .kickoff(inputs={"topic":self.state.topic})
-        )
-        print("CREW 1 FINISHED")
+        # self.state.topic = "Vision Transformers (ViT)"
+        # output = (
+        #     ResearcherCrew()
+        #     .crew()
+        #     .kickoff(inputs={"topic":self.state.topic})
+        # )
+        # print("CREW 1 FINISHED")
         parsed_papers = []
-        papers_to_parse = output["papers"]
+        papers_to_parse = []
+        # papers_to_parse = output["papers"]
         # papers_to_parse = [
         # PaperFound(
         # pdf_name="Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf",
@@ -65,6 +67,17 @@ class ResearcherFlow(Flow[ResearcherState]):
         # pdf_path="knowledge/Vision Transformer with Quadrangle Attention.pdf"
         # ),
         # ]
+
+        # this part is for debugging, return the list of downloaded papers
+
+        folder_path = Path("./knowledge")
+
+        for pdf_file in folder_path.glob("*.pdf"):
+            pdf_name = pdf_file.name
+            pdf_path = str(pdf_file)
+            paper_found = PaperFound(pdf_name=pdf_name,pdf_path=pdf_path)
+            papers_to_parse.append(paper_found)
+
         for paper in papers_to_parse:
             parsed_text = parser(paper.pdf_path)
             pdf_name = paper.pdf_name

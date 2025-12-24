@@ -6,7 +6,7 @@ from src.MyTypes import Score
 load_dotenv()
 
 # llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
-llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434")
+llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434", temperature=0.1)
 
 @CrewBase
 class JudgeCrew:
