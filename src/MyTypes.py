@@ -26,3 +26,10 @@ class ProsCons(BaseModel):
 class Score(BaseModel):
     score: int
     hints: str
+
+class PaperInfos(BaseModel):
+    title: str 
+    publicationInfo : str
+    year : str
+    pdfUrl : str
+    filename : str
