@@ -4650,6 +4650,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "crewai", extra = ["tools"] },
+    { name = "crewai-tools" },
     { name = "docling" },
     { name = "pymupdf" },
 ]
@@ -4657,6 +4658,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "crewai", extras = ["tools"], specifier = ">=0.186.1" },
+    { name = "crewai-tools", specifier = ">=0.71.0" },
     { name = "docling", specifier = ">=2.61.1" },
     { name = "pymupdf", specifier = ">=1.26.6" },
 ]
