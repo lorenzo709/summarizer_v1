@@ -21,9 +21,10 @@ from src.crews.GapResearcherCrew.GapResearcherCrew import GapResearcherCrew
 from src.crews.JudgeCrew.JudgeCrew import JudgeCrew
 from src.crews.CorrectionCrew.CorrectionCrew import CorrectionCrew
 
-from src.MyTypes import ParsedText, Summary, ProsCons, PaperFound, Score, Times
+from src.MyTypes import ParsedText, Summary, ProsCons, PaperFound, Score, Times, PaperInfos
 from typing import List
 from tools.pdf_parser_no_tool_version import parser
+from tools.research_topic import search_and_save_pdf
 
 from pathlib import Path
 import time
@@ -35,6 +36,7 @@ class ResearcherState(BaseModel):
     summaries: List[Summary] = []
     pros_and_cons: List[ProsCons] = []
     gaps_in_SOTA: str = ""
+    papers_infos : List[PaperInfos] = []
     times: List[Times] = []
 
 class ResearcherFlow(Flow[ResearcherState]):
@@ -52,28 +54,13 @@ class ResearcherFlow(Flow[ResearcherState]):
         # print("CREW 1 FINISHED")
         parsed_papers = []
         papers_to_parse = []
-        # papers_to_parse = output["papers"]
-        # papers_to_parse = [
-        # PaperFound(
-        # pdf_name="Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf",
-        # pdf_path="knowledge/Evo-ViT_ Slow-Fast Token Evolution for Dynamic Vision Transformer.pdf"
-        # ),
-        # PaperFound(
-        # pdf_name="PatchRot_ A Self-Supervised Technique for Training Vision Transformers.pdf",
-        # pdf_path="knowledge/PatchRot_ A Self-Supervised Technique for Training Vision Transformers.pdf"
-        # ),
-        # PaperFound(
-        # pdf_name="Vicinity Vision Transformer.pdf",
-        # pdf_path="knowledge/Vicinity Vision Transformer.pdf"
-        # ),
-        # PaperFound(
-        # pdf_name="Vision Transformer with Quadrangle Attention.pdf",
-        # pdf_path="knowledge/Vision Transformer with Quadrangle Attention.pdf"
-        # ),
-        # ]
 
         # this part is for debugging, return the list of downloaded papers
 
+        # Adding "manual research"
+        topic = "Vision Transformers (ViT) 2025"
+        papers_info = search_and_save_pdf(topic,"./knowledge" )
+        self.state.papers_infos = papers_info
         folder_path = Path("./knowledge")
 
         for pdf_file in folder_path.glob("*.pdf"):
