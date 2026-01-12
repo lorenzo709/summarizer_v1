@@ -27,7 +27,7 @@ from tools.pdf_parser_no_tool_version import parser
 from tools.research_topic import search_and_save_pdf
 
 from pathlib import Path
-import time
+import time as tm
 load_dotenv()
 
 class ResearcherState(BaseModel):
@@ -45,7 +45,7 @@ class ResearcherFlow(Flow[ResearcherState]):
     def research_interesting_papers(self):
         print("Starting to look for interesting papers on topic")
         # self.state.topic = "Vision Transformers (ViT)"
-        start = time.perf_counter()
+        start = tm.perf_counter()
         # output = (
         #     ResearcherCrew()
         #     .crew()
@@ -79,7 +79,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         print(parsed_papers[0].parsed_text[:100])
         self.state.parsed_papers = parsed_papers
         # self.state.parsed_papers = output["parsed_papers"]
-        end = time.perf_counter()
+        end = tm.perf_counter()
         final_time = (end - start) / 60
         time =Times(section="Search",total_time=final_time,avg_time=final_time)
         self.state.times.append(time)
@@ -92,7 +92,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         times = []
 
         async def write_single_summary(parsed_text):
-            start = time.perf_counter()
+            start = tm.perf_counter()
             output = ( 
                 SummarizationCrew()
                 .crew()
@@ -101,7 +101,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             summ = output["summary"]
             print(summ)
             summary = Summary(summary=summ)
-            end = time.perf_counter()
+            end = tm.perf_counter()
             times.append(end-start)
             return summary
         
@@ -125,14 +125,14 @@ class ResearcherFlow(Flow[ResearcherState]):
         times = []
 
         async def write_single_review(parsed_text):
-            start = time.perf_counter()
+            start = tm.perf_counter()
             output = ( 
                 ReviewerCrew()
                 .crew()
                 .kickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
             pro_con = output["summary"]
-            end = time.perf_counter()
+            end = tm.perf_counter()
             times.append(end-start)
             pdf_title = parsed_text.pdf_name
             pro_and_con = ProsCons(paper_name=pdf_title,pros_and_cons=pro_con)
@@ -154,7 +154,7 @@ class ResearcherFlow(Flow[ResearcherState]):
     @listen(review_papers)
     async def find_gaps_in_SOTA(self):
         print("starting finding gaps in SOTA")
-        start = time.perf_counter()
+        start = tm.perf_counter()
         formatted_items = [
             f"{pro_and_con.paper_name}: \n{pro_and_con.pros_and_cons}"
             for pro_and_con in self.state.pros_and_cons
@@ -165,7 +165,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             .crew()
             .kickoff( inputs={ "topic": self.state.topic, "pro_limitation_points_input": pro_limitation_points_input } )
         )
-        end = time.perf_counter()
+        end = tm.perf_counter()
         final_result = output["summary"]
         final_time = (end - start) / 60
         time =Times(section="Gaps",total_time=final_time,avg_time=final_time)
@@ -179,7 +179,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         all_summaries_string = [summary.summary for summary in self.state.summaries]
         all_summaries = "\n\n".join(all_summaries_string)
         print(all_summaries)
-        start = time.perf_counter()
+        start = tm.perf_counter()
         output = (
             AggregateCrew()
             .crew()
@@ -190,12 +190,12 @@ class ResearcherFlow(Flow[ResearcherState]):
         final_summary = output["summary"]
         print("INITIAL FINAL SUMMARY:\n")
         print(final_summary)
-        end = time.perf_counter()
+        end = tm.perf_counter()
         time_final_summary = (end - start) / 60
         print(f"total time for final summary:{time_final_summary}")
         time_aggregate = Times(section="Aggregate",total_time=time_final_summary,avg_time=time_final_summary)
         self.state.times.append(time_aggregate)
-        start = time.perf_counter()
+        start = tm.perf_counter()
         output_judge = (
             JudgeCrew()
             .crew()
@@ -227,7 +227,7 @@ class ResearcherFlow(Flow[ResearcherState]):
             hints = output_judge["hints"]
             times_final_summary_judged += 1
         
-        end = time.perf_counter()
+        end = tm.perf_counter()
         time_judge = (end - start) / 60
         print(f"total time for correction:{time_judge}")
         time = Times(section="Aggregate",total_time=time_judge,avg_time=time_judge)
