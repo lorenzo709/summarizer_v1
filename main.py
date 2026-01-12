@@ -230,7 +230,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         end = tm.perf_counter()
         time_judge = (end - start) / 60
         print(f"total time for correction:{time_judge}")
-        time = Times(section="Aggregate",total_time=time_judge,avg_time=time_judge)
+        time = Times(section="Judge",total_time=time_judge,avg_time=time_judge)
         self.state.times.append(time)
 
         print("--- INDIVIDUAL PAPER ANALYSIS ---")
