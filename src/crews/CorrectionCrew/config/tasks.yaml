@@ -1,0 +1,10 @@
+correction_task:
+    description: >
+        1. Review the Original Text: {original_text}\n
+        2. Review the Current Summary: {current_summary}\n
+        3. Review the Judge's Hints: {judge_hints}\n
+        Your job is to rewrite the summary to address every hint provided by the judge
+        without adding information not found in the original text."
+    
+    expected_output: >
+        A corrected, high-fidelity summary in Markdown format.

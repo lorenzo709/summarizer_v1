@@ -33,3 +33,8 @@ class PaperInfos(BaseModel):
     year : str
     pdfUrl : str
     filename : str
+
+class Times(BaseModel):
+    section: str
+    total_time: float
+    avg_time: float
