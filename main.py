@@ -58,9 +58,9 @@ class ResearcherFlow(Flow[ResearcherState]):
         # this part is for debugging, return the list of downloaded papers
 
         # Adding "manual research"
-        topic = "Vision Transformers (ViT) 2025"
-        papers_info = search_and_save_pdf(topic,"./knowledge" )
-        self.state.papers_infos = papers_info
+        # topic = "Vision Transformers (ViT) 2025"
+        # papers_info = search_and_save_pdf(topic,"./knowledge" )
+        # self.state.papers_infos = papers_info
         folder_path = Path("./knowledge")
 
         for pdf_file in folder_path.glob("*.pdf"):
@@ -274,10 +274,17 @@ class ResearcherFlow(Flow[ResearcherState]):
 
         print("-" * 35)
 
-        # 6. Print Times
+        # # 6. Print papers infos
+        # print("Bibliography\n")
+        # for paper in self.state.papers_infos:
+        #     print(f"{paper.publicationInfo}, {paper.title}, {paper.year}, {paper.pdfUrl}\n")
+        # print("-" * 35)
+
+        # 7. Print Times
         print("Times:")
         for time in self.state.times:
             print(f"Section: {time.section}, Total Time: {time.total_time}, Average Time: {time.avg_time}")
+        
 
 
 def kickoff():
