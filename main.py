@@ -99,8 +99,25 @@ class ResearcherFlow(Flow[ResearcherState]):
                 .kickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
             summ = output["summary"]
-            print(summ)
-            summary = Summary(summary=summ)
+            # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
+            output_judge = (
+                JudgeCrew()
+                .crew()
+                .kickoff(
+                    inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
+                )
+            )
+            hints = output_judge["hints"]
+            output = (
+                CorrectionCrew()
+                .crew()
+                .kickoff(
+                    inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                )
+            )
+            # print(summ)
+            # summary = Summary(summary=summ)
+            summary = Summary(summary=output["summary"])
             end = tm.perf_counter()
             times.append(end-start)
             return summary
