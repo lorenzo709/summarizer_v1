@@ -28,6 +28,9 @@ from tools.research_topic import search_and_save_pdf
 
 from pathlib import Path
 import time as tm
+
+from codecarbon import EmissionsTracker
+
 load_dotenv()
 
 class ResearcherState(BaseModel):
@@ -306,7 +309,16 @@ class ResearcherFlow(Flow[ResearcherState]):
 
 def kickoff():
     researcher_flow= ResearcherFlow()
-    researcher_flow.kickoff()
+    tracker = EmissionsTracker(
+        project_name="My Project",
+        measure_power_secs= 60,
+        save_to_file=True,
+        output_dir="./emissions",
+    )
+    try:
+        researcher_flow.kickoff()
+    finally:
+        tracker.stop()
 
 def plot():
     researcher_flow= ResearcherFlow()
