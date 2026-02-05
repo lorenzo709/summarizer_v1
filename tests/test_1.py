@@ -2,8 +2,8 @@ from deepeval import evaluate
 from deepeval.metrics import GEval, HallucinationMetric, AnswerRelevancyMetric, FaithfulnessMetric
 from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 
-from pathlib import Path
-from tools.pdf_parser_no_tool_version import parser
+# from pathlib import Path
+# from tools.pdf_parser_no_tool_version import parser
 
 def test_test():
 
