@@ -8,6 +8,7 @@ dependencies = [
     "codecarbon>=3.2.2",
     "crewai-tools>=0.71.0",
     "crewai[tools]>=0.186.1",
+    "deepeval>=2.6.7",
     "docling>=2.61.1",
     "pymupdf>=1.26.6",
 ]
