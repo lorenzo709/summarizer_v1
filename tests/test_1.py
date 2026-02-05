@@ -2,6 +2,18 @@ from deepeval import evaluate
 from deepeval.metrics import GEval, HallucinationMetric, AnswerRelevancyMetric, FaithfulnessMetric
 from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 
+from pathlib import Path
+from tools.pdf_parser_no_tool_version import parser
+
+folder_path = Path("./knowledge")
+inputs_papers = []
+for pdf_file in folder_path.glob("*.pdf"):
+    pdf_name = pdf_file.name
+    pdf_path = str(pdf_file)
+    parsed_text = parser(pdf_path)
+    inputs_papers.append(parsed_text)
+
+## Summaries without judge 
 
 # 2. Define a G-Eval Metric for Technical Precision
 technical_precision = GEval(
@@ -14,8 +26,9 @@ technical_precision = GEval(
 
 # 3. Define a Hallucination Metric
 # This ensures the agent didn't "invent" findings not in the paper
-hallucination_check = HallucinationMetric(threshold=0.5)
-
+hallucination_check = HallucinationMetric(threshold=0.5, verbose_mode=True)
+relevancy = AnswerRelevancyMetric(threshold=0.6, verbose_mode=True)
+faithfulness = FaithfulnessMetric(threshold=0.6, verbose_mode=True)
 # 4. Prepare your Test Case
 # 'input' is the full paper text, 'actual_output' is your CrewAI summary
 test_case = LLMTestCase(
@@ -28,6 +41,6 @@ test_case = LLMTestCase(
 # 'evaluate' will run all metrics on all test cases and print a summary table
 evaluate(
     test_cases=[test_case],
-    metrics=[technical_precision, hallucination_check],
+    metrics=[technical_precision, hallucination_check, relevancy, faithfulness],
     print_results=True
 )
