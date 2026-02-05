@@ -17,6 +17,7 @@ def test_test():
         name="test",
         criteria = "controlla se la risposta alla domanda è corretta",
         evaluation_params=[LLMTestCaseParams.EXPECTED_OUTPUT,LLMTestCaseParams.ACTUAL_OUTPUT],
+        verbose_mode=True,
         threshold=0.7
     )
 # folder_path = Path("./knowledge")
