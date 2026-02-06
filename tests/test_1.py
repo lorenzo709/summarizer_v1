@@ -3,6 +3,9 @@ from deepeval.metrics import GEval, HallucinationMetric, AnswerRelevancyMetric, 
 from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 
 from pathlib import Path
+import os 
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from tools.pdf_parser_no_tool_version import parser
 import json
 
