@@ -52,24 +52,25 @@ for i in range(len(inputs_papers)):
 
 test_cases_with_judge = []
 
-for i in range(len(inputs_papers)):
-    case = LLMTestCase(
-        input = inputs_papers[i],
-        actual_output= data["single_paper_judge"][i]["summary"]
-    )
-    test_cases_with_judge.append(case)
+# for i in range(len(inputs_papers)):
+#     case = LLMTestCase(
+#         input = inputs_papers[i],
+#         actual_output= data["single_paper_judge"][i]["summary"]
+#     )
+#     test_cases_with_judge.append(case)
 
 
-
+print(len(test_cases_no_judges))
 result_no_judge = evaluate(
     test_cases=[test_cases_no_judges],
     metrics=[summarization_metric],
     print_results=True
 )
 
-result_with_judge = evaluate(
-    test_cases=[test_cases_with_judge],
-    metrics=[summarization_metric],
-    print_results=True
-)
+# print(len(test_cases_with_judge))
+# result_with_judge = evaluate(
+#     test_cases=[test_cases_with_judge],
+#     metrics=[summarization_metric],
+#     print_results=True
+# )
 
