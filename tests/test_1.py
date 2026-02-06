@@ -30,7 +30,6 @@ for pdf_file in folder_path.glob("*.pdf"):
     pdf_name = pdf_file.name
     pdf_path = str(pdf_file)
     parsed_text = parser(pdf_path)
-    print(parsed_text[:100])
     inputs_papers.append(parsed_text)
 
 current_dir = Path(__file__).parent
@@ -44,8 +43,8 @@ summarization_metric = SummarizationMetric(
 ## Summaries without judge 
 test_cases_no_judges = []
 
-print("lunghezza inputs", len(inputs_papers))
-print("lunghezza data", len(data))
+print(len(inputs_papers))
+print(len(data))
 for i in range(len(inputs_papers)):
     print(inputs_papers[i][:100])
     print(data["single_papers_no_judge"][i]["summary"][:100])
