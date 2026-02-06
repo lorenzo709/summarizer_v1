@@ -30,6 +30,7 @@ for pdf_file in folder_path.glob("*.pdf"):
     pdf_name = pdf_file.name
     pdf_path = str(pdf_file)
     parsed_text = parser(pdf_path)
+    print(parsed_text[:100])
     inputs_papers.append(parsed_text)
 
 current_dir = Path(__file__).parent
