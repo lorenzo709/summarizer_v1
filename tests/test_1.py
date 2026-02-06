@@ -4,6 +4,7 @@ from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 
 from pathlib import Path
 from tools.pdf_parser_no_tool_version import parser
+import json
 
 # correctness_metric = GEval(
 #     name="Correctness",
@@ -28,12 +29,44 @@ for pdf_file in folder_path.glob("*.pdf"):
     parsed_text = parser(pdf_path)
     inputs_papers.append(parsed_text)
 
-# Using 3 metrics to test summaries: SummarizationMetric, HallucinationMetric, Geval
+current_dir = Path(__file__).parent
+json_path = current_dir / "data.json"
+with open(json_path, "r", encoding="utf-8") as f:
+    data = json.load(f)
+
+summarization_metric = SummarizationMetric(
+    threshold=0.5,
+)
 ## Summaries without judge 
 test_cases_no_judges = []
 
-# evaluate(
-#     test_cases=[test_case],
-#     metrics=[technical_precision, hallucination_check, relevancy, faithfulness],
-#     print_results=True
-# )
+for i in range(len(inputs_papers)):
+    case = LLMTestCase(
+        input = inputs_papers[i],
+        actual_output= data["single_papers_no_judge"][i]["summary"]
+    )
+    test_cases_no_judges.append(case)
+
+test_cases_with_judge = []
+
+for i in range(len(inputs_papers)):
+    case = LLMTestCase(
+        input = inputs_papers[i],
+        actual_output= data["single_paper_judge"][i]["summary"]
+    )
+    test_cases_with_judge.append(case)
+
+
+
+result_no_judge = evaluate(
+    test_cases=[test_cases_no_judges],
+    metrics=[summarization_metric],
+    print_results=True
+)
+
+result_with_judge = evaluate(
+    test_cases=[test_cases_with_judge],
+    metrics=[summarization_metric],
+    print_results=True
+)
+
