@@ -24,7 +24,7 @@ import json
 # )
 
 # evaluate([test_case], [correctness_metric])
-folder_path = Path("./knowledge")
+folder_path = Path("../knowledge")
 inputs_papers = []
 for pdf_file in folder_path.glob("*.pdf"):
     pdf_name = pdf_file.name
