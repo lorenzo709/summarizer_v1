@@ -49,8 +49,8 @@ print(len(data))
 for i in range(len(inputs_papers)):
     print(data["single_papers_no_judge"][i]["summary"][:100])
     case = LLMTestCase(
-        input = inputs_papers[i],
-        actual_output= data["single_papers_no_judge"][i]["summary"]
+        input = str(inputs_papers[i]),
+        actual_output= str(data["single_papers_no_judge"][i]["summary"])
     )
     test_cases_no_judges.append(case)
 
