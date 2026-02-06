@@ -44,6 +44,8 @@ summarization_metric = SummarizationMetric(
 ## Summaries without judge 
 test_cases_no_judges = []
 
+print("lunghezza inputs", len(inputs_papers))
+print("lunghezza data", len(data))
 for i in range(len(inputs_papers)):
     print(inputs_papers[i][:100])
     print(data["single_papers_no_judge"][i]["summary"][:100])
