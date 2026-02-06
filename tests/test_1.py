@@ -68,7 +68,8 @@ print(len(test_cases_no_judges))
 result_no_judge = evaluate(
     test_cases=test_cases_no_judges,
     metrics=[summarization_metric],
-    print_results=True
+    print_results=True,
+    run_async=False
 )
 
 # print(len(test_cases_with_judge))
