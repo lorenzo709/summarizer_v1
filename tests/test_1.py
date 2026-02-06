@@ -32,8 +32,9 @@ for pdf_file in folder_path.glob("*.pdf"):
     parsed_text = parser(pdf_path)
     inputs_papers.append(parsed_text)
 
-current_dir = Path(__file__).parent
-json_path = current_dir / "data.json"
+# current_dir = Path(__file__).parent
+# json_path = current_dir / "data.json"
+json_path = Path("./data.json")
 with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
@@ -46,7 +47,6 @@ test_cases_no_judges = []
 print(len(inputs_papers))
 print(len(data))
 for i in range(len(inputs_papers)):
-    print(inputs_papers[i][:100])
     print(data["single_papers_no_judge"][i]["summary"][:100])
     case = LLMTestCase(
         input = inputs_papers[i],
