@@ -44,6 +44,8 @@ summarization_metric = SummarizationMetric(
 test_cases_no_judges = []
 
 for i in range(len(inputs_papers)):
+    print(inputs_papers[i][:100])
+    print(data["single_papers_no_judge"][i]["summary"][:100])
     case = LLMTestCase(
         input = inputs_papers[i],
         actual_output= data["single_papers_no_judge"][i]["summary"]
