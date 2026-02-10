@@ -47,7 +47,6 @@ test_cases_no_judges = []
 print(len(inputs_papers))
 print(len(data))
 for i in range(len(inputs_papers)):
-    print(data["single_papers_no_judge"][i]["summary"][:100])
     case = LLMTestCase(
         input = str(inputs_papers[i]),
         actual_output= str(data["single_papers_no_judge"][i]["summary"])
@@ -64,14 +63,15 @@ test_cases_with_judge = []
 #     test_cases_with_judge.append(case)
 
 
-print(len(test_cases_no_judges))
 result_no_judge = evaluate(
     test_cases=test_cases_no_judges,
     metrics=[summarization_metric],
     print_results=True,
     run_async=False
 )
-
+print(summarization_metric.score)
+print(summarization_metric.reason)
+print(summarization_metric.score_breakdown)
 # print(len(test_cases_with_judge))
 # result_with_judge = evaluate(
 #     test_cases=[test_cases_with_judge],
