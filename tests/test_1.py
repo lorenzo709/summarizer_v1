@@ -9,8 +9,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from tools.pdf_parser_no_tool_version import parser
 import json
 
-# correctness_metric = GEval(
-#     name="Correctness",
+# pro_con_metric = GEval(
+#     name="Pros and Cons",
 #     criteria="Determine if the 'actual output' is correct based on the 'expected output'.",
 #     evaluation_params=[LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
 #     threshold=0.5
@@ -53,29 +53,65 @@ for i in range(len(inputs_papers)):
     )
     test_cases_no_judges.append(case)
 
+## Summaries with judge 
 test_cases_with_judge = []
 
-# for i in range(len(inputs_papers)):
-#     case = LLMTestCase(
-#         input = inputs_papers[i],
-#         actual_output= data["single_paper_judge"][i]["summary"]
-#     )
-#     test_cases_with_judge.append(case)
-
+for i in range(len(inputs_papers)):
+    case = LLMTestCase(
+        input = str(inputs_papers[i]),
+        actual_output= data["single_paper_judge"][i]["summary"]
+    )
+    test_cases_with_judge.append(case)
 
 result_no_judge = evaluate(
     test_cases=test_cases_no_judges,
     metrics=[summarization_metric],
     print_results=True,
-    run_async=False
+    run_async=False,
+    verbose_mode=True
 )
 print(summarization_metric.score)
 print(summarization_metric.reason)
 print(summarization_metric.score_breakdown)
-# print(len(test_cases_with_judge))
-# result_with_judge = evaluate(
-#     test_cases=[test_cases_with_judge],
-#     metrics=[summarization_metric],
-#     print_results=True
-# )
 
+print(len(test_cases_with_judge))
+result_with_judge = evaluate(
+    test_cases=[test_cases_with_judge],
+    metrics=[summarization_metric],
+    print_results=True,
+    run_async=False,
+    verbose_mode=True
+)
+
+## TESTING PROS AND CONS
+
+pros_cons_metric = GEval(
+    name="Pros and Cons Depth & Accuracy",
+    criteria="""Determine if the output provides a series of distinct points for both 
+                'Main Benefits' and 'Areas for Improvement'. The points must be 
+                technically grounded in the paper and avoid vague language.""",
+    evaluation_steps=[
+        "Check if the output is divided into 'Main Benefits' and 'Areas for Improvement' (or similar headings).",
+        "Verify that each point is a discrete, specific insight rather than a broad generalization.",
+        "Ensure 'Main Benefits' focus on the novel contributions or strengths of the methodology.",
+        "Ensure 'Areas for Improvement' identify legitimate technical gaps, limitations, or potential refinements.",
+        "Count the points: A high-quality response should provide at least 3 distinct points per section if the paper depth allows."
+    ],
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
+)
+
+test_cases_single_pro_cons = []
+for i in range(len(inputs_papers)):
+    case = LLMTestCase(
+        input = str(inputs_papers[i]),
+        actual_output= str(data["single_papers_no_judge"][i]["pros_cons"])
+    )
+    test_cases_single_pro_cons.append(case)
+
+result_pro_cons_no_judge = evaluate(
+    test_cases=test_cases_single_pro_cons,
+    metrics=[pros_cons_metric],
+    print_results=True,
+    run_async=False,
+    verbose_mode=True
+)
