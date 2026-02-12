@@ -76,7 +76,7 @@ print(summarization_metric.score_breakdown)
 
 print(len(test_cases_with_judge))
 result_with_judge = evaluate(
-    test_cases=[test_cases_with_judge],
+    test_cases=test_cases_with_judge,
     metrics=[summarization_metric],
     print_results=True,
     run_async=False,
