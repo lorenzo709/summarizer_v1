@@ -26,7 +26,7 @@ class ResearcherCrew:
     def researcher(self) -> Agent:
         return Agent(
             tools=[
-                SerperDevTool(),
+                # SerperDevTool(),
                 ArxivPaperTool(
                     download_pdfs=True,
                     save_dir="./knowledge",
