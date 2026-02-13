@@ -50,11 +50,11 @@ class ResearcherFlow(Flow[ResearcherState]):
         # self.state.topic = "Vision Transformers (ViT)"
         self.state.topic = "catalytic water splitting on platinum"
         start = tm.perf_counter()
-        output = (
-            ResearcherCrew()
-            .crew()
-            .kickoff(inputs={"topic":self.state.topic})
-        )
+        # output = (
+        #     ResearcherCrew()
+        #     .crew()
+        #     .kickoff(inputs={"topic":self.state.topic})
+        # )
         # print("CREW 1 FINISHED")
         parsed_papers = []
         papers_to_parse = []
@@ -63,8 +63,9 @@ class ResearcherFlow(Flow[ResearcherState]):
 
         # Adding "manual research"
         # topic = "Vision Transformers (ViT) 2025"
-        # papers_info = search_and_save_pdf(topic,"./knowledge" )
-        # self.state.papers_infos = papers_info
+        topic = "catalytic water splitting on platinum"
+        papers_info = search_and_save_pdf(topic,"./knowledge" )
+        self.state.papers_infos = papers_info
         folder_path = Path("./knowledge")
 
         for pdf_file in folder_path.glob("*.pdf"):
@@ -295,11 +296,11 @@ class ResearcherFlow(Flow[ResearcherState]):
 
         print("-" * 35)
 
-        # # 6. Print papers infos
-        # print("Bibliography\n")
-        # for paper in self.state.papers_infos:
-        #     print(f"{paper.publicationInfo}, {paper.title}, {paper.year}, {paper.pdfUrl}\n")
-        # print("-" * 35)
+        # 6. Print papers infos
+        print("Bibliography\n")
+        for paper in self.state.papers_infos:
+            print(f"{paper.publicationInfo}, {paper.title}, {paper.year}, {paper.pdfUrl}\n")
+        print("-" * 35)
 
         # 7. Print Times
         print("Times:")
