@@ -48,12 +48,13 @@ class ResearcherFlow(Flow[ResearcherState]):
     def research_interesting_papers(self):
         print("Starting to look for interesting papers on topic")
         # self.state.topic = "Vision Transformers (ViT)"
+        self.state.topic = "catalytic water splitting on platinum"
         start = tm.perf_counter()
-        # output = (
-        #     ResearcherCrew()
-        #     .crew()
-        #     .kickoff(inputs={"topic":self.state.topic})
-        # )
+        output = (
+            ResearcherCrew()
+            .crew()
+            .kickoff(inputs={"topic":self.state.topic})
+        )
         # print("CREW 1 FINISHED")
         parsed_papers = []
         papers_to_parse = []

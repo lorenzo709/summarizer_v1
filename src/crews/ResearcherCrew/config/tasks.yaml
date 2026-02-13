@@ -1,6 +1,6 @@
 research_task:
     description: >
-        find 6 scientific papers on {topic}.
+        find 10 scientific papers on {topic}.
         Use the tool "Arxiv Paper Fetcher and Downloader" to find them on Arxiv and save them inside the knowledge folder
         NOTE: YOU MUST USE THE TOOL Arxiv Paper Fetcher and Downloader TO SEARCH THE WEB
     expected_output: >
@@ -12,20 +12,20 @@ research_task:
         pdf_path: knowledge/title_paper1.pdf
 #         Confermation that 2 papers have been found.
 
-organize_task:
-    description: >
-        Read inside the folder 'knowledge' using the tool DirectoryReadTool()
+# organize_task:
+#     description: >
+#         Read inside the folder 'knowledge' using the tool DirectoryReadTool()
 
-        For each PDF file, return the name of the file and the **EXACT** path where it is saved(Get the path directly from the output of the DirectoryReadTool())
+#         For each PDF file, return the name of the file and the **EXACT** path where it is saved(Get the path directly from the output of the DirectoryReadTool())
         
-        The final output MUST be a Pydantic object of class PDFPapers, containing 
-        a list of PaperFound objects, where each object has the 'pdf_name' and the 
-        full 'pdf_path'.
-#        Example Input (from previous agent):
-#        ['knowledge/LLMs_in_Summarization.pdf', 'knowledge/Scaling_Laws_for_LLMs.pdf']
-    expected_output: >
-        A validated JSON object conforming to the 'PDFPapers' Pydantic model.
-        The output must be a single JSON object (not a list).
+#         The final output MUST be a Pydantic object of class PDFPapers, containing 
+#         a list of PaperFound objects, where each object has the 'pdf_name' and the 
+#         full 'pdf_path'.
+# #        Example Input (from previous agent):
+# #        ['knowledge/LLMs_in_Summarization.pdf', 'knowledge/Scaling_Laws_for_LLMs.pdf']
+#     expected_output: >
+#         A validated JSON object conforming to the 'PDFPapers' Pydantic model.
+#         The output must be a single JSON object (not a list).
 
 # scraper_task:
 #     description: >
