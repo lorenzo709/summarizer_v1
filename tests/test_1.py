@@ -38,9 +38,24 @@ json_path = Path("./data.json")
 with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
-summarization_metric = SummarizationMetric(
-    threshold=0.5,
-)
+# summarization_metric = SummarizationMetric(
+#     threshold=0.5,
+# )
+summarization_metric = GEval(
+        name="Summary Quality",
+        # Criteria defines what the LLM should look for
+        criteria="Determine if the summary captures the core methodology and limitations of the paper without hallucinating facts.",
+        # Evaluation steps guide the LLM's reasoning process (CoT)
+        evaluation_steps=[
+            "Esure that core methodology is included in the summary.",
+            "Verify if at least one limitation or 'gap' is identified in the summary.",
+            "Ensure no information is included that wasn't in the original text.",
+            "Assess the professional tone and academic clarity."
+        ],
+        # Which parts of the test case should the judge look at?
+        evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
+        threshold=0.5
+    )
 ## Summaries without judge 
 test_cases_no_judges = []
 
@@ -70,9 +85,6 @@ result_no_judge = evaluate(
     run_async=False,
     verbose_mode=True
 )
-print(summarization_metric.score)
-print(summarization_metric.reason)
-print(summarization_metric.score_breakdown)
 
 print(len(test_cases_with_judge))
 result_with_judge = evaluate(
