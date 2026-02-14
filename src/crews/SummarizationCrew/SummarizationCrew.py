@@ -50,6 +50,8 @@ class SummarizationCrew:
                 "of the work being summarized. Your output is always between 400 and 500 words."
             ),
             verbose=True,
+            max_iter=5,
+            max_rpm=10,
         )
 
 
