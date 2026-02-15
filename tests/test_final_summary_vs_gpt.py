@@ -62,9 +62,13 @@ synthesis_quality_metric = GEval(
     threshold=0.8
 )
 
+summarization_metric = SummarizationMetric(
+    verbose_mode=True
+)
+
 evaluate(
     test_cases=[case_for_chat_gpt],
-    metrics=[synthesis_quality_metric],
+    metrics=[synthesis_quality_metric,summarization_metric],
     print_results=True,
     run_async=False,
     verbose_mode=True
@@ -72,7 +76,7 @@ evaluate(
 
 evaluate(
     test_cases=[case_for_pipe],
-    metrics=[synthesis_quality_metric],
+    metrics=[synthesis_quality_metric,summarization_metric],
     print_results=True,
     run_async=False,
     verbose_mode=True
