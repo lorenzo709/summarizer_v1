@@ -24,7 +24,7 @@ with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
 gpt_summaries = data.get("summaries_gpt",[])
-input_gpt = str("/n/n".join([item['summary'] for item in gpt_summaries if 'summary' in item] ))
+input_gpt = str("\n\n".join([item['summary'] for item in gpt_summaries if 'summary' in item] ))
 
 output_gpt = str(data.get("final_summary_gpt",[]))
 
@@ -34,7 +34,7 @@ case_for_chat_gpt = LLMTestCase(
 )
 
 pipe_summaries = data.get("summaries_my_pipe",[])
-input_pipe = str("/n/n".join([item['summary'] for item in pipe_summaries if 'summary' in item] ))
+input_pipe = str("\n\n".join([item['summary'] for item in pipe_summaries if 'summary' in item] ))
 
 output_pipe = str(data.get("final_summary_my_pipe",[]))
 
