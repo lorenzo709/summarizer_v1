@@ -49,7 +49,8 @@ class ResearcherFlow(Flow[ResearcherState]):
         print("Starting to look for interesting papers on topic")
         # self.state.topic = "Vision Transformers (ViT)"
         # self.state.topic = "catalytic water splitting on platinum"
-        self.state.topic = "Zero-Shot Robot Manipulation via CLIP-based Spatial Reasoning."
+        # self.state.topic = "Zero-Shot Robot Manipulation via CLIP-based Spatial Reasoning."
+        self.state.topic = "Retrieval-Augmented Generation for Legacy Code Refactoring."
         start = tm.perf_counter()
         output = (
             ResearcherCrew()
