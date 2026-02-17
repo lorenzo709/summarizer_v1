@@ -53,12 +53,12 @@ class ResearcherFlow(Flow[ResearcherState]):
         # self.state.topic = "Retrieval-Augmented Generation for Legacy Code Refactoring."
         self.state.topic = "Liquid Neural Networks for Continuous-time Signal Processing."
         start = tm.perf_counter()
-        output = (
-            ResearcherCrew()
-            .crew()
-            .kickoff(inputs={"topic":self.state.topic})
-        )
-        # print("CREW 1 FINISHED")
+        # output = (
+        #     ResearcherCrew()
+        #     .crew()
+        #     .kickoff(inputs={"topic":self.state.topic})
+        # )
+        # # print("CREW 1 FINISHED")
         parsed_papers = []
         papers_to_parse = []
 
