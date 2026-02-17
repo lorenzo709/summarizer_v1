@@ -19,7 +19,7 @@ import json
 
 # current_dir = Path(__file__).parent
 # json_path = current_dir / "data.json"
-json_path = Path("./data_zero_shot_robot_man.json")
+json_path = Path("./data_liquid_neural_networks.json")
 with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
@@ -83,5 +83,3 @@ result_my_pipe = evaluate(
 )
 
 print(f"TOPIC: {data['topic']}")
-print(f"GPT: {result_gpt}")
-print(f"MY PIPE: {result_my_pipe}")
