@@ -19,7 +19,7 @@ import json
 
 # current_dir = Path(__file__).parent
 # json_path = current_dir / "data.json"
-json_path = Path("./data_liquid_neural_networks.json")
+json_path = Path("./data_visual_transformers.json")
 with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
