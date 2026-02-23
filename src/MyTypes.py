@@ -38,3 +38,17 @@ class Times(BaseModel):
     section: str
     total_time: float
     avg_time: float
+
+# This part is for the separated scripts, still testing them
+class SummaryProConsSinglePaper(BaseModel):
+    paper_name: str
+    summary: str
+    pros_and_cons: str
+
+class ResultPipeLine(BaseModel):
+    topic: str
+    processed_papers: List[SummaryProConsSinglePaper]
+    final_summary: str
+    gaps_in_SOTA: str
+    times: List[Times]
+    notes: str
