@@ -168,7 +168,7 @@ def main():
         notes="",
     )
     papers = setup(result_pipeline)
-    sum_papers(papers, result_pipeline)
+    asyncio.run(sum_papers(papers, result_pipeline))
     aggregate_summaries(result_pipeline)
     print(result_pipeline.model_dump_json())
 
