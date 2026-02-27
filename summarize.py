@@ -177,5 +177,8 @@ def main():
     aggregate_summaries(result_pipeline)
     print(result_pipeline.model_dump_json())
 
+    with open ("result.json","w") as f:
+        f.write(result_pipeline.model_dump_json())
+
 if __name__ == "__main__":
     main()
