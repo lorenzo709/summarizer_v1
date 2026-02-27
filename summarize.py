@@ -48,42 +48,45 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
     tasks = []
     times = []
 
-    async def write_single_summary(pr,parsed_text):
-        start = tm.perf_counter()
-        output = ( 
-            SummarizationCrew()
-            .crew()
-            .kickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
-        )
-        summ = output["summary"]
-        # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
-        output_judge = (
-            JudgeCrew()
-            .crew()
-            .kickoff(
-                inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
+    THREAD_LIMITER = asyncio.Semaphore(2)
+
+    async def write_single_summary(rp,parsed_text):
+        async with THREAD_LIMITER:
+            start = tm.perf_counter()
+            output = ( 
+                await SummarizationCrew()
+                .crew()
+                .akickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
-        )
-        hints = output_judge["hints"]
-        output = (
-            CorrectionCrew()
-            .crew()
-            .kickoff(
-                inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+            summ = output["summary"]
+            # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
+            output_judge = (
+                JudgeCrew()
+                .crew()
+                .kickoff(
+                    inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
+                )
             )
-        )
-        # print(summ)
-        # summary = Summary(summary=summ)
-        summary = Summary(summary=output["summary"])
-        end = tm.perf_counter()
-        times.append(end-start)
-        processed_paper = SummaryProConsSinglePaper(
-            paper_name = parsed_text.pdf_name,
-            summary = summary.summary,
-            pros_and_cons = ""
-        )
-        rp.processed_papers.append(processed_paper)
-        return summary
+            hints = output_judge["hints"]
+            output = (
+                CorrectionCrew()
+                .crew()
+                .kickoff(
+                    inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                )
+            )
+            # print(summ)
+            # summary = Summary(summary=summ)
+            summary = Summary(summary=output["summary"])
+            end = tm.perf_counter()
+            times.append(end-start)
+            processed_paper = SummaryProConsSinglePaper(
+                paper_name = parsed_text.pdf_name,
+                summary = summary.summary,
+                pros_and_cons = ""
+            )
+            rp.processed_papers.append(processed_paper)
+            return summary
 
     for raw_paper in parsed_papers:
         task = asyncio.create_task(write_single_summary(rp,raw_paper))
