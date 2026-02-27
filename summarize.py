@@ -54,9 +54,9 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
         async with THREAD_LIMITER:
             start = tm.perf_counter()
             output = ( 
-                await SummarizationCrew()
+                SummarizationCrew()
                 .crew()
-                .akickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
+                .kickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
             summ = output["summary"]
             # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
