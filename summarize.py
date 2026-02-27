@@ -68,13 +68,15 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
                 )
             )
             hints = output_judge["hints"]
-            output = (
-                CorrectionCrew()
-                .crew()
-                .kickoff(
-                    inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+            score = output_judge["score"]
+            if score < 5:
+                output = (
+                    CorrectionCrew()
+                    .crew()
+                    .kickoff(
+                        inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                    )
                 )
-            )
             # print(summ)
             # summary = Summary(summary=summ)
             summary = Summary(summary=output["summary"])
