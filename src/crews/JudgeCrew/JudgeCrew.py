@@ -10,7 +10,7 @@ load_dotenv()
 # llm = LLM(model="ollama/qwen2.5:72b", base_url="http://localhost:11434")
 # llm = LLM(model="ollama/llama3.1:70b", base_url="http://localhost:11434", temperature=0.1)
 # llm = LLM(model="ollama/llama4:scout", base_url="http://localhost:11434", temperature=0.1)
-llm = LLM(model="ollama/qwen3.5:122b", base_url="http://localhost:11434", reasoning_effort="low")
+llm = LLM(model="ollama/qwen3.5:122b", base_url="http://localhost:11434", reasoning_effort='low')
 
 @CrewBase
 class JudgeCrew:
