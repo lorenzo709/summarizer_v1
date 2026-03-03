@@ -58,8 +58,7 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
                 .crew()
                 .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
-            # summ = output["summary"]
-            summ = str(output.summary)
+            summ = str(output["summary"])
             # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
             output_judge = await (
                 JudgeCrew()
