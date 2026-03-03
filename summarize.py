@@ -48,32 +48,33 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
     tasks = []
     times = []
 
-    THREAD_LIMITER = asyncio.Semaphore(1)
+    THREAD_LIMITER = asyncio.Semaphore(2)
 
     async def write_single_summary(rp,parsed_text):
         async with THREAD_LIMITER:
             start = tm.perf_counter()
-            output = ( 
+            output = await ( 
                 SummarizationCrew()
                 .crew()
-                .kickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
+                .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
-            summ = output["summary"]
+            # summ = output["summary"]
+            summ = str(output.summary)
             # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
-            output_judge = (
+            output_judge = await (
                 JudgeCrew()
                 .crew()
-                .kickoff(
+                .kickoff_async(
                     inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
                 )
             )
             hints = output_judge["hints"]
             score = output_judge["score"]
             if score < 5:
-                output = (
+                output = await (
                     CorrectionCrew()
                     .crew()
-                    .kickoff(
+                    .kickoff_async(
                         inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
                     )
                 )
