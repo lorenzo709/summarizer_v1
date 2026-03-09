@@ -48,7 +48,7 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
     tasks = []
     times = []
 
-    THREAD_LIMITER = asyncio.Semaphore(3)
+    THREAD_LIMITER = asyncio.Semaphore(2)
 
     async def write_single_summary(rp,parsed_text):
         async with THREAD_LIMITER:
