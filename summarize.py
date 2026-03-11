@@ -168,6 +168,7 @@ def aggregate_summaries(rp: ResultPipeLine):
 def main():
     result_pipeline = ResultPipeLine(
         topic = "",
+        model = "",
         processed_papers=[],
         final_summary="",
         gaps_in_SOTA="",
