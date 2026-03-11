@@ -15,13 +15,15 @@ from src.crews.JudgeCrew.JudgeCrew import JudgeCrew
 from src.crews.CorrectionCrew.CorrectionCrew import CorrectionCrew
 from src.crews.AggregatorCrew.AggregatorCrew import AggregateCrew
 
+TOPIC = "Liquid Neural Networks for Continuous-time Signal Processing."
+MODEL = "ollama/llama4:scout"
 
-def setup(rp: ResultPipeLine, topic: str, model: str):
+def setup(rp: ResultPipeLine):
     parsed_papers = []
     papers_to_parse = []
 
-    rp.topic = topic
-    rp.model = model
+    rp.topic = TOPIC
+    rp.model = MODEL
     start = tm.perf_counter()
 
     folder_path = Path("./knowledge")
@@ -172,9 +174,7 @@ def main():
         times=[],
         notes="",
     )
-    topic = "Liquid Neural Networks for Continuous-time Signal Processing."
-    model = "ollama/llama4:scout"
-    papers = setup(result_pipeline, topic, model)
+    papers = setup(result_pipeline)
     asyncio.run(sum_papers(papers, result_pipeline))
     aggregate_summaries(result_pipeline)
     print(result_pipeline.model_dump_json())
