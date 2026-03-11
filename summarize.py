@@ -16,12 +16,12 @@ from src.crews.CorrectionCrew.CorrectionCrew import CorrectionCrew
 from src.crews.AggregatorCrew.AggregatorCrew import AggregateCrew
 
 
-def setup(rp: ResultPipeLine):
+def setup(rp: ResultPipeLine, topic: str, model: str):
     parsed_papers = []
     papers_to_parse = []
 
-    topic = "Liquid Neural Networks for Continuous-time Signal Processing."
     rp.topic = topic
+    rp.model = model
     start = tm.perf_counter()
 
     folder_path = Path("./knowledge")
@@ -48,7 +48,7 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
     tasks = []
     times = []
 
-    THREAD_LIMITER = asyncio.Semaphore(2)
+    THREAD_LIMITER = asyncio.Semaphore(3)
 
     async def write_single_summary(rp,parsed_text):
         async with THREAD_LIMITER:
@@ -172,7 +172,9 @@ def main():
         times=[],
         notes="",
     )
-    papers = setup(result_pipeline)
+    topic = "Liquid Neural Networks for Continuous-time Signal Processing."
+    model = "ollama/llama4:scout"
+    papers = setup(result_pipeline, topic, model)
     asyncio.run(sum_papers(papers, result_pipeline))
     aggregate_summaries(result_pipeline)
     print(result_pipeline.model_dump_json())

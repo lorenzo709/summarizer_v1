@@ -47,6 +47,7 @@ class SummaryProConsSinglePaper(BaseModel):
 
 class ResultPipeLine(BaseModel):
     topic: str
+    model: str
     processed_papers: List[SummaryProConsSinglePaper]
     final_summary: str
     gaps_in_SOTA: str
