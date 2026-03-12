@@ -16,7 +16,7 @@ from src.crews.CorrectionCrew.CorrectionCrew import CorrectionCrew
 from src.crews.AggregatorCrew.AggregatorCrew import AggregateCrew
 
 TOPIC = "Liquid Neural Networks for Continuous-time Signal Processing."
-MODEL = "ollama/llama4:scout"
+MODEL = "llama4:scout"
 
 def setup(rp: ResultPipeLine):
     parsed_papers = []
@@ -50,6 +50,7 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
     tasks = []
     times = []
 
+    start_total = tm.perf_counter()
     THREAD_LIMITER = asyncio.Semaphore(3)
 
     async def write_single_summary(rp,parsed_text):
@@ -98,7 +99,10 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
 
     summaries = await asyncio.gather(*tasks)
     print("finished writing all the summaries")
-    total_time = sum(times) / 60
+
+    end_total = tm.perf_counter()
+    # total_time = sum(times) / 60
+    total_time = (end_total - start_total) / 60
     avg_time = (sum(times)/len(times))/60 if times else 0
     print(f"total time:{total_time} || average call time:{avg_time}")
     time =Times(section="Summarization",total_time=total_time,avg_time=avg_time)
@@ -179,8 +183,8 @@ def main():
     asyncio.run(sum_papers(papers, result_pipeline))
     aggregate_summaries(result_pipeline)
     print(result_pipeline.model_dump_json())
-
-    with open ("result.json","w") as f:
+    filename = f"result_{TOPIC}_{MODEL}.json"
+    with open (filename,"w") as f:
         f.write(result_pipeline.model_dump_json())
 
 if __name__ == "__main__":
