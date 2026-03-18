@@ -16,7 +16,7 @@ from src.crews.CorrectionCrew.CorrectionCrew import CorrectionCrew
 from src.crews.AggregatorCrew.AggregatorCrew import AggregateCrew
 
 TOPIC = "Liquid Neural Networks for Continuous-time Signal Processing."
-MODEL = "llama4:scout"
+MODEL = "gpt-oss:120b"
 
 def setup(rp: ResultPipeLine):
     parsed_papers = []
