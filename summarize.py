@@ -197,7 +197,7 @@ def main():
             failed_papers.append(failed_paper_name)
 
     failed_parsed_text = [ p for p in papers if p.pdf_name in failed_papers]
-    if failed_parsed_text.len() != 0:
+    if len(failed_parsed_text) != 0:
         asyncio.run(sum_papers(failed_parsed_text, result_pipeline))
     aggregate_summaries(result_pipeline)
     print(result_pipeline.model_dump_json())
