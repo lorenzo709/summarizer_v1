@@ -56,41 +56,50 @@ async def sum_papers(parsed_papers: List[ParsedText], rp: ResultPipeLine):
     async def write_single_summary(rp,parsed_text):
         async with THREAD_LIMITER:
             start = tm.perf_counter()
-            output = await ( 
-                SummarizationCrew()
-                .crew()
-                .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
-            )
-            summ = str(output["summary"])
-            # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
-            output_judge = await (
-                JudgeCrew()
-                .crew()
-                .kickoff_async(
-                    inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
+            try: 
+                output = await ( 
+                    SummarizationCrew()
+                    .crew()
+                    .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
                 )
-            )
-            hints = output_judge["hints"]
-            score = output_judge["score"]
-            if score < 5:
-                output = await (
-                    CorrectionCrew()
+                summ = str(output["summary"])
+                # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
+                output_judge = await (
+                    JudgeCrew()
                     .crew()
                     .kickoff_async(
-                        inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                        inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
                     )
                 )
-            # print(summ)
-            # summary = Summary(summary=summ)
-            summary = Summary(summary=output["summary"])
-            end = tm.perf_counter()
-            times.append(end-start)
-            processed_paper = SummaryProConsSinglePaper(
-                paper_name = parsed_text.pdf_name,
-                summary = summary.summary,
-                pros_and_cons = ""
-            )
-            rp.processed_papers.append(processed_paper)
+                hints = output_judge["hints"]
+                score = output_judge["score"]
+                if score < 5:
+                    output = await (
+                        CorrectionCrew()
+                        .crew()
+                        .kickoff_async(
+                            inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                        )
+                    )
+                # print(summ)
+                # summary = Summary(summary=summ)
+                summary = Summary(summary=output["summary"])
+                end = tm.perf_counter()
+                times.append(end-start)
+                processed_paper = SummaryProConsSinglePaper(
+                    paper_name = parsed_text.pdf_name,
+                    summary = summary.summary,
+                    pros_and_cons = ""
+                )
+                rp.processed_papers.append(processed_paper)
+            except Exception as e:
+                summary = Summary(summary="")
+                processed_paper = SummaryProConsSinglePaper(
+                    paper_name = parsed_text.pdf_name,
+                    summary = "",
+                    pros_and_cons = ""
+                )
+                rp.processed_papers.append(processed_paper)
             return summary
 
     for raw_paper in parsed_papers:
@@ -181,6 +190,15 @@ def main():
     )
     papers = setup(result_pipeline)
     asyncio.run(sum_papers(papers, result_pipeline))
+    failed_papers = []
+    for paper in result_pipeline.processed_papers:
+        if paper.summary is None:
+            failed_paper_name = paper.paper_name
+            failed_papers.append(failed_paper_name)
+
+    failed_parsed_text = [ p for p in papers if p.pdf_name in failed_papers]
+    if failed_parsed_text.len() != 0:
+        asyncio.run(sum_papers(failed_parsed_text, result_pipeline))
     aggregate_summaries(result_pipeline)
     print(result_pipeline.model_dump_json())
     filename = f"result_{TOPIC}_{MODEL}.json"
