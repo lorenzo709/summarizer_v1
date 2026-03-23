@@ -343,21 +343,19 @@ class ResearcherFlow(Flow[ResearcherState]):
             f.write(result_pipeline.model_dump_json())
 
 
-        
-
-
 def kickoff():
     researcher_flow= ResearcherFlow()
-    tracker = EmissionsTracker(
-        project_name="My Project",
-        measure_power_secs= 60,
-        save_to_file=True,
-        output_dir="./emissions",
-    )
-    try:
-        researcher_flow.kickoff()
-    finally:
-        tracker.stop()
+    # tracker = EmissionsTracker(
+    #     project_name="My Project",
+    #     measure_power_secs= 60,
+    #     save_to_file=True,
+    #     output_dir="./emissions",
+    # )
+    # try:
+    #     researcher_flow.kickoff()
+    # finally:
+    #     tracker.stop()
+    researcher_flow.kickoff()
 
 def plot():
     researcher_flow= ResearcherFlow()
