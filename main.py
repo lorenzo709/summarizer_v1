@@ -21,7 +21,7 @@ from src.crews.GapResearcherCrew.GapResearcherCrew import GapResearcherCrew
 from src.crews.JudgeCrew.JudgeCrew import JudgeCrew
 from src.crews.CorrectionCrew.CorrectionCrew import CorrectionCrew
 
-from src.MyTypes import ParsedText, Summary, ProsCons, PaperFound, Score, Times, PaperInfos
+from src.MyTypes import ParsedText, Summary, ProsCons, PaperFound, Score, Times, PaperInfos, SummaryProConsSinglePaper, ResultPipeLine
 from typing import List
 from tools.pdf_parser_no_tool_version import parser
 from tools.research_topic import search_and_save_pdf
@@ -32,6 +32,9 @@ import time as tm
 from codecarbon import EmissionsTracker
 
 load_dotenv()
+
+TOPIC = "Liquid Neural Networks for Continuous-time Signal Processing."
+MODEL = "gpt-oss:120b"
 
 class ResearcherState(BaseModel):
     topic: str = ""
@@ -273,11 +276,26 @@ class ResearcherFlow(Flow[ResearcherState]):
         # We'll use the shorter list's length to be safe.
         num_papers = min(len(self.state.summaries), len(self.state.pros_and_cons))
 
+        result_pipeline = ResultPipeLine(
+            topic = TOPIC,
+            model = MODEL,
+            processed_papers=[],
+            final_summary="",
+            gaps_in_SOTA="",
+            times=[],
+            notes="",
+        )
         for i in range(num_papers):
             # Get the data for the current paper
             paper_summary = self.state.summaries[i]
             paper_pros_cons = self.state.pros_and_cons[i]
 
+            paper = SummaryProConsSinglePaper(
+                paper_name=paper_pros_cons.paper_name,
+                summary=paper_summary.summary,
+                pros_and_cons=paper_pros_cons.pros_and_cons
+            )
+            result_pipeline.processed_papers.append(paper)
             # 1. Print Paper Name
             # We use paper_pros_cons.paper_name here, assuming it holds the identifier.
             print(f"Paper Name {i + 1}: \n{paper_pros_cons.paper_name}")
@@ -300,10 +318,11 @@ class ResearcherFlow(Flow[ResearcherState]):
         # 4. Print Final Summary (from the Agent's output)
         # This typically represents the overall synthesis or conclusion.
         print(f"Final Summary: {final_summary}")
+        result_pipeline.final_summary = final_summary
 
         # 5. Print Gaps in SOTA
         print(f"Gaps in SOTA: {self.state.gaps_in_SOTA}")
-
+        result_pipeline.gaps_in_SOTA = self.state.gaps_in_SOTA
         print("-" * 35)
 
         # 6. Print papers infos
@@ -316,6 +335,14 @@ class ResearcherFlow(Flow[ResearcherState]):
         print("Times:")
         for time in self.state.times:
             print(f"Section: {time.section}, Total Time: {time.total_time}, Average Time: {time.avg_time}")
+
+        result_pipeline.times = self.state.times
+
+        filename = f"result_{TOPIC}_{MODEL}.json"
+        with open (filename,"w") as f:
+            f.write(result_pipeline.model_dump_json())
+
+
         
 
 
