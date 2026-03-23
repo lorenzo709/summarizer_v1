@@ -20,7 +20,7 @@ from src.crews.GapResearcherCrew.GapResearcherCrew import GapResearcherCrew
 
 
 TOPIC = "Liquid Neural Networks for Continuous-time Signal Processing."
-MODEL = "llama4:scout"
+MODEL = "gpt-oss:120b"
 
 def setup(rp: ResultPipeLine):
     parsed_papers = []
@@ -126,7 +126,8 @@ def find_gaps_in_SOTA(rp: ResultPipeLine):
 
 
 def main():
-    with open('result.json', 'r') as file:
+    filename = f"result_{TOPIC}_{MODEL}.json"
+    with open(filename, 'r') as file:
         data = json.load(file)
 
     # 2. Parse the dictionary into the Pydantic model
@@ -137,7 +138,7 @@ def main():
     find_gaps_in_SOTA(result_pipeline)
     print(result_pipeline.model_dump_json())
 
-    with open ("result.json","w") as f:
+    with open (filename,"w") as f:
         f.write(result_pipeline.model_dump_json())
 
 if __name__ == "__main__":

@@ -99,30 +99,33 @@ class ResearcherFlow(Flow[ResearcherState]):
         tasks = []
         times = []
 
+        total_start = tm.perf_counter()
         async def write_single_summary(parsed_text):
             start = tm.perf_counter()
-            output = ( 
+            output = await ( 
                 SummarizationCrew()
                 .crew()
-                .kickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
+                .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
             summ = output["summary"]
             # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
-            output_judge = (
+            output_judge = await (
                 JudgeCrew()
                 .crew()
-                .kickoff(
+                .kickoff_async(
                     inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
                 )
             )
             hints = output_judge["hints"]
-            output = (
-                CorrectionCrew()
-                .crew()
-                .kickoff(
-                    inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+            score = output_judge["score"]
+            if score < 5:
+                output = await(
+                    CorrectionCrew()
+                    .crew()
+                    .kickoff_async(
+                        inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                    )
                 )
-            )
             # print(summ)
             # summary = Summary(summary=summ)
             summary = Summary(summary=output["summary"])
@@ -136,7 +139,9 @@ class ResearcherFlow(Flow[ResearcherState]):
 
         summaries = await asyncio.gather(*tasks)
         print("finished writing all the summaries")
-        total_time = sum(times) / 60
+
+        total_end = tm.perf_counter()
+        total_time = (total_end - total_start) / 60
         avg_time = (sum(times)/len(times))/60 if times else 0
         print(f"total time:{total_time} || average call time:{avg_time}")
         time =Times(section="Summarization",total_time=total_time,avg_time=avg_time)
@@ -149,12 +154,13 @@ class ResearcherFlow(Flow[ResearcherState]):
         tasks = []
         times = []
 
+        total_start = tm.perf_counter()
         async def write_single_review(parsed_text):
             start = tm.perf_counter()
-            output = ( 
+            output = await( 
                 ReviewerCrew()
                 .crew()
-                .kickoff( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
+                .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
             pro_con = output["summary"]
             end = tm.perf_counter()
@@ -169,7 +175,8 @@ class ResearcherFlow(Flow[ResearcherState]):
 
         pros_and_cons = await asyncio.gather(*tasks)
         print("finished writing all the reviews")
-        total_time = sum(times) / 60
+        end_total = tm.perf_counter()
+        total_time = (end_total - total_start) / 60
         avg_time = ( sum(times)/len(times) )/ 60 if times else 0
         print(f"total time:{total_time} || average call time:{avg_time}")
         time =Times(section="Review",total_time=total_time,avg_time=avg_time)
@@ -185,10 +192,10 @@ class ResearcherFlow(Flow[ResearcherState]):
             for pro_and_con in self.state.pros_and_cons
         ]
         pro_limitation_points_input = "\n".join(formatted_items)
-        output = (
+        output = await(
             GapResearcherCrew()
             .crew()
-            .kickoff( inputs={ "topic": self.state.topic, "pro_limitation_points_input": pro_limitation_points_input } )
+            .kickoff_async( inputs={ "topic": self.state.topic, "pro_limitation_points_input": pro_limitation_points_input } )
         )
         end = tm.perf_counter()
         final_result = output["summary"]
