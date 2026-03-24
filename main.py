@@ -103,44 +103,61 @@ class ResearcherFlow(Flow[ResearcherState]):
         times = []
 
         total_start = tm.perf_counter()
+
         async def write_single_summary(parsed_text):
-            start = tm.perf_counter()
-            output = await ( 
-                SummarizationCrew()
-                .crew()
-                .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
-            )
-            summ = output["summary"]
-            # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
-            output_judge = await (
-                JudgeCrew()
-                .crew()
-                .kickoff_async(
-                    inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
+            try:
+                start = tm.perf_counter()
+                output = await ( 
+                    SummarizationCrew()
+                    .crew()
+                    .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
                 )
-            )
-            hints = output_judge["hints"]
-            score = output_judge["score"]
-            if score < 5:
-                output = await(
-                    CorrectionCrew()
+                summ = output["summary"]
+                # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
+                output_judge = await (
+                    JudgeCrew()
                     .crew()
                     .kickoff_async(
-                        inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                        inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
                     )
                 )
-            # print(summ)
-            # summary = Summary(summary=summ)
-            summary = Summary(summary=output["summary"])
-            end = tm.perf_counter()
-            times.append(end-start)
-            return summary
-        
+                hints = output_judge["hints"]
+                score = output_judge["score"]
+                if score < 5:
+                    output = await(
+                        CorrectionCrew()
+                        .crew()
+                        .kickoff_async(
+                            inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                        )
+                    )
+                # print(summ)
+                # summary = Summary(summary=summ)
+                summary = Summary(summary=output["summary"])
+                end = tm.perf_counter()
+                times.append(end-start)
+                return summary
+            except Exception as e:
+                return Summary(summary=parsed_text.pdf_name)
+            
         for raw_paper in self.state.parsed_papers:
             task = asyncio.create_task(write_single_summary(raw_paper))
             tasks.append(task)
 
-        summaries = await asyncio.gather(*tasks)
+        summaries = await asyncio.gather(*tasks) # FAILED PAPERS WILL HAVE ONLY THEIR NAMES IN THE SUMMARY
+
+        failed_papers = [p for p in self.state.parsed_papers if p.pdf_name in summaries]
+
+        if len(failed_papers) > 0:
+            retry_tasks = []
+            for raw_paper in failed_papers:
+                retry_task = asyncio.create_task(write_single_summary(raw_paper))
+                retry_tasks.append(retry_task)
+
+            retry_summaries = await asyncio.gather(*retry_tasks)
+
+            summaries.extend(retry_summaries)
+
         print("finished writing all the summaries")
 
         total_end = tm.perf_counter()
