@@ -42,7 +42,7 @@ top -b -d 60 | grep --line-buffered "Cpu(s)" > "$LOG_DIR/cpu_stats.txt" &
 
 # echo "Pipelines running with PIDs: $PY_PID_1, $PY_PID_2"
 
-python summarize.py
+python main.py
 # PY_PID_1=$!
 
 # # 5. Wait for both Python scripts to finish
