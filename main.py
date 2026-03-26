@@ -34,7 +34,7 @@ from codecarbon import EmissionsTracker
 load_dotenv()
 
 TOPIC = "Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
-MODEL = "deepseek-r1_70b"
+MODEL = "llama4_scout"
 
 class ResearcherState(BaseModel):
     topic: str = ""
