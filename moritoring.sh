@@ -1,8 +1,11 @@
 #!/bin/bash
 
+TOPIC="Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
+MODEL="gpt-oss_120b"
 # 1. Setup unique log folder
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-LOG_DIR="logs_$TIMESTAMP"
+# TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+LOG_DIR="logs_$TOPIC_$MODEL"
 mkdir -p "$LOG_DIR"
 
 # 2. Define the Cleanup Function
