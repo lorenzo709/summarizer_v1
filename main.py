@@ -33,8 +33,8 @@ from codecarbon import EmissionsTracker
 
 load_dotenv()
 
-TOPIC = "Liquid Neural Networks for Continuous-time Signal Processing."
-MODEL = "gpt-oss:120b"
+TOPIC = "Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
+MODEL = "gpt-oss_120b"
 
 class ResearcherState(BaseModel):
     topic: str = ""
