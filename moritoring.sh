@@ -5,7 +5,7 @@ MODEL="gpt-oss_120b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
-LOG_DIR="logs_$TOPIC_$MODEL"
+LOG_DIR="logs_${TOPIC}_${MODEL}"
 mkdir -p "$LOG_DIR"
 
 # 2. Define the Cleanup Function
