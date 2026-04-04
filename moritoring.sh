@@ -20,16 +20,16 @@ trap cleanup EXIT SIGINT SIGTERM
 
 # 3. Start Monitors (Polling every 60 seconds)
 
-# GPU: Using a loop to poll every 60s
+# GPU: Using a loop to poll every 1s
 (
   while true; do
     rocm-smi --showpower --showmemuse --csv >> "$LOG_DIR/gpu_stats.csv"
-    sleep 60
+    sleep 1
   done
 ) &
 
-# CPU: top -d 60 sets the delay to 60 seconds
-top -b -d 60 | grep --line-buffered "Cpu(s)" > "$LOG_DIR/cpu_stats.txt" &
+# CPU: top -d 1 sets the delay to 1 seconds
+top -b -d 1 | grep --line-buffered "Cpu(s)" > "$LOG_DIR/cpu_stats.txt" &
 
 # # 4. Run Two Python Pipelines Simultaneously
 # echo "Starting pipelines... (Press Ctrl+C to stop manually)"
