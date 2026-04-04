@@ -6,12 +6,12 @@ from src.MyTypes import Summary
 load_dotenv()
 
 # llm = LLM(model="ollama/deepseek-r1:8b", base_url="http://localhost:11434")
-# llm = LLM(model="ollama/deepseek-r1:70b", base_url="http://localhost:11434", timeout=3600)
+llm = LLM(model="ollama/deepseek-r1:70b", base_url="http://localhost:11434", timeout=3600)
 # llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434", timeout=3600)
 # llm = LLM(model="ollama/qwen2.5:72b", base_url="http://localhost:11434")
 # llm = LLM(model="ollama/llama3.1:70b", base_url="http://localhost:11434")
 # llm = LLM(model="ollama/llama4:scout", base_url="http://localhost:11434", timeout=3600)
-llm = LLM(model="ollama/qwen3.5:122b", base_url="http://localhost:11434", reasoning_effort='none', timeout=3600)
+# llm = LLM(model="ollama/qwen3.5:122b", base_url="http://localhost:11434", reasoning_effort='none', timeout=3600)
 
 @CrewBase
 class CorrectionCrew:
