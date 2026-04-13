@@ -23,7 +23,7 @@ trap cleanup EXIT SIGINT SIGTERM
 # GPU: Using a loop to poll every 1s
 (
   while true; do
-    rocm-smi --showpower --showmemuse --csv >> "$LOG_DIR/gpu_stats.csv"
+    rocm-smi --showpower --showmemuse --csv 2>/dev/null >> "$LOG_DIR/gpu_stats.csv"
     sleep 1
   done
 ) &
