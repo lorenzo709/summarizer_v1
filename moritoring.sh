@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOPIC="Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
+TOPIC="Retrieval-Augmented_Generation_for_Legacy_Code_Refactoring."
 MODEL="deepseek-r1_70b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
