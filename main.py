@@ -107,12 +107,12 @@ class ResearcherFlow(Flow[ResearcherState]):
         async def write_single_summary(parsed_text):
             try:
                 start = tm.perf_counter()
-                output = await ( 
+                output_summarizator = await ( 
                     SummarizationCrew()
                     .crew()
                     .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
                 )
-                summ = output["summary"]
+                summ = output_summarizator["summary"]
                 # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
                 output_judge = await (
                     JudgeCrew()
@@ -124,16 +124,19 @@ class ResearcherFlow(Flow[ResearcherState]):
                 hints = output_judge["hints"]
                 score = output_judge["score"]
                 if score < 5:
-                    output = await(
+                    output_corrector = await(
                         CorrectionCrew()
                         .crew()
                         .kickoff_async(
                             inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
                         )
                     )
+                    corrected_summ = output_corrector["summary"]
+                    summ = corrected_summ
                 # print(summ)
                 # summary = Summary(summary=summ)
-                summary = Summary(summary=output["summary"])
+                # summary = Summary(summary=output_summarizator["summary"])
+                summary = Summary(summary=summ)
                 end = tm.perf_counter()
                 times.append(end-start)
                 return summary
