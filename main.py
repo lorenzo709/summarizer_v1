@@ -28,6 +28,7 @@ from tools.research_topic import search_and_save_pdf
 
 from pathlib import Path
 import time as tm
+import json 
 
 from codecarbon import EmissionsTracker
 
@@ -185,7 +186,12 @@ class ResearcherFlow(Flow[ResearcherState]):
                 .crew()
                 .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
             )
-            pro_con = output["summary"]
+            raw_data = output.pydantic.summary
+            if isinstance(raw_data, dict):
+                pro_con = json.dumps(raw_data, indent = 2)
+            else:
+                pro_con = str(raw_data)
+            # pro_con = output["summary"]
             end = tm.perf_counter()
             times.append(end-start)
             pdf_title = parsed_text.pdf_name
