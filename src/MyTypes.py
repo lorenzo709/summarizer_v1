@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List, Union
 
 from pydantic import BaseModel
 
@@ -17,7 +17,7 @@ class ParsedPapers(BaseModel):
     parsed_papers: List[ParsedText]
 
 class Summary(BaseModel):
-    summary: str
+    summary: Union[str, dict, Any]
 
 class ProsCons(BaseModel):
     paper_name: str
