@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOPIC="catalytic_water_splitting_on_platinum"
+TOPIC="Vision_Transformers"
 MODEL="deepseek-r1_70b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
