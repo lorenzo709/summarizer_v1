@@ -113,7 +113,12 @@ class ResearcherFlow(Flow[ResearcherState]):
                     .crew()
                     .kickoff_async( inputs={ "paper": parsed_text.parsed_text } ) # ADDED ASYNC
                 )
-                summ = output_summarizator["summary"]
+                raw_data = output_summarizator.pydantic.summary
+                # summ = output_summarizator["summary"]
+                if isinstance(raw_data, dict):
+                    summ = json.dumps(raw_data, indent = 2)
+                else:
+                    summ = str(raw_data)
                 # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
                 output_judge = await (
                     JudgeCrew()
@@ -132,7 +137,12 @@ class ResearcherFlow(Flow[ResearcherState]):
                             inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
                         )
                     )
-                    corrected_summ = output_corrector["summary"]
+                    raw_data_corrector = output_corrector.pydantic.summary
+                    # corrected_summ = output_corrector["summary"]
+                    if isinstance(raw_data_corrector, dict):
+                        corrected_summ = json.dumps(raw_data_corrector, indent = 2)
+                    else:
+                        corrected_summ = str(raw_data_corrector)
                     summ = corrected_summ
                 # print(summ)
                 # summary = Summary(summary=summ)
