@@ -35,7 +35,7 @@ from codecarbon import EmissionsTracker
 load_dotenv()
 
 TOPIC = "Vision_Transformers"
-MODEL = "llama4_scout"
+MODEL = "llama33_latest"
 
 class ResearcherState(BaseModel):
     topic: str = ""

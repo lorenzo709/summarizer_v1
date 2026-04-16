@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOPIC="Vision_Transformers"
-MODEL="llama4_scout"
+MODEL="llama33_latest"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
