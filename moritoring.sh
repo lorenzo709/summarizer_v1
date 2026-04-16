@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOPIC="Vision_Transformers"
-MODEL="deepseek-r1_70b"
+MODEL="llama4_scout"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
