@@ -17,7 +17,8 @@ class ParsedPapers(BaseModel):
     parsed_papers: List[ParsedText]
 
 class Summary(BaseModel):
-    summary: Union[str, dict, Any]
+    # summary: Union[str, dict, Any]
+    summary: str
 
 class ProsCons(BaseModel):
     paper_name: str
