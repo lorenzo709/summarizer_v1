@@ -38,9 +38,11 @@ TOPIC = "Vision_Transformers"
 MODEL = "qwen3-next_80b"
 
 class ResearcherState(BaseModel):
+    model: str = ""
     topic: str = ""
     parsed_papers: List[ParsedText] = []
     summaries: List[Summary] = []
+    final_summary: str = ""
     pros_and_cons: List[ProsCons] = []
     gaps_in_SOTA: str = ""
     papers_infos : List[PaperInfos] = []
@@ -48,8 +50,19 @@ class ResearcherState(BaseModel):
 
 class ResearcherFlow(Flow[ResearcherState]):
     
+    def _save_checkpoint(self):
+        """Save current state in a JSON file"""
+        checkpoint_path = Path(f"checkpoint_{TOPIC}_{MODEL}.json")
+        with open(checkpoint_path, "w") as f:
+            f.write(self.state.model_dump_json())
+        print(f"--- Checkpoint saved to {checkpoint_path} ---")
+
     @start()
     def research_interesting_papers(self):
+        if len(self.state.parsed_papers) == 10:
+            print("Skipping Research: Papers already parsed in state.")
+            return
+        self.state.model = MODEL
         print("Starting to look for interesting papers on topic")
         self.state.topic = "Vision Transformers (ViT)"
         # self.state.topic = "catalytic water splitting on platinum"
@@ -97,8 +110,16 @@ class ResearcherFlow(Flow[ResearcherState]):
         self.state.times.append(time)
         print(f"Search finisced in: {final_time:.2f}s")
 
+        self._save_checkpoint()
+
     @listen(research_interesting_papers)
     async def summarize_papers(self):
+        if len(self.state.summaries) == 10:
+            print("Skipping Summarization: Summaries already exist.")
+            return
+        
+        self.state.summaries.clear()
+
         print("starting summarazing the content")
         tasks = []
         times = []
@@ -138,15 +159,11 @@ class ResearcherFlow(Flow[ResearcherState]):
                         )
                     )
                     raw_data_corrector = output_corrector.pydantic.summary
-                    # corrected_summ = output_corrector["summary"]
                     if isinstance(raw_data_corrector, dict):
                         corrected_summ = json.dumps(raw_data_corrector, indent = 2)
                     else:
                         corrected_summ = str(raw_data_corrector)
                     summ = corrected_summ
-                # print(summ)
-                # summary = Summary(summary=summ)
-                # summary = Summary(summary=output_summarizator["summary"])
                 summary = Summary(summary=summ)
                 end = tm.perf_counter()
                 times.append(end-start)
@@ -182,8 +199,16 @@ class ResearcherFlow(Flow[ResearcherState]):
         self.state.times.append(time)
         self.state.summaries.extend(summaries)
 
+        self._save_checkpoint()
+
     @listen(research_interesting_papers)
     async def review_papers(self):
+        if len(self.state.pros_and_cons) == 10:
+            print("Skipping Review: Pros/Cons already exist.")
+            return
+        
+        self.state.pros_and_cons.clear()
+
         print("starting reviewing the papers")
         tasks = []
         times = []
@@ -221,9 +246,14 @@ class ResearcherFlow(Flow[ResearcherState]):
         time =Times(section="Review",total_time=total_time,avg_time=avg_time)
         self.state.times.append(time)
         self.state.pros_and_cons.extend(pros_and_cons)
+
+        self._save_checkpoint()
         
     @listen(review_papers)
     async def find_gaps_in_SOTA(self):
+        if self.state.gaps_in_SOTA:
+            print("Skipping Gaps: SOTA gaps already identified.")
+            return
         print("starting finding gaps in SOTA")
         start = tm.perf_counter()
         formatted_items = [
@@ -244,49 +274,34 @@ class ResearcherFlow(Flow[ResearcherState]):
         print(f"total time:{final_time}")
         self.state.gaps_in_SOTA = final_result
 
+        self._save_checkpoint()
+
     @listen(and_(summarize_papers,review_papers,find_gaps_in_SOTA))
     async def aggregate_results(self):
-        print("Aggregating all the summarises in a single block")
-        all_summaries_string = [summary.summary for summary in self.state.summaries]
-        all_summaries = "\n\n".join(all_summaries_string)
-        print(all_summaries)
-        start = tm.perf_counter()
-        output = (
-            AggregateCrew()
-            .crew()
-            .kickoff(
-                inputs={"summaries": all_summaries, "hints":""}
-            )
-        )
-        final_summary = output["summary"]
-        print("INITIAL FINAL SUMMARY:\n")
-        print(final_summary)
-        end = tm.perf_counter()
-        time_final_summary = (end - start) / 60
-        print(f"total time for final summary:{time_final_summary}")
-        time_aggregate = Times(section="Aggregate",total_time=time_final_summary,avg_time=time_final_summary)
-        self.state.times.append(time_aggregate)
-        start = tm.perf_counter()
-        output_judge = (
-            JudgeCrew()
-            .crew()
-            .kickoff(
-                inputs={"source_summaries": all_summaries, "final_summary": final_summary}
-            )
-        )
-        score = output_judge["score"]
-        hints = output_judge["hints"]
-
-        times_final_summary_judged = 0
-        while score < 5 and times_final_summary_judged < 2:
+        if self.state.final_summary:
+            print("Skipping Aggregation: Final summary already exists.")
+        else:
+            print("Aggregating all the summarises in a single block")
+            all_summaries_string = [summary.summary for summary in self.state.summaries]
+            all_summaries = "\n\n".join(all_summaries_string)
+            print(all_summaries)
+            start = tm.perf_counter()
             output = (
-                CorrectionCrew()
+                AggregateCrew()
                 .crew()
                 .kickoff(
-                    inputs={"original_text": all_summaries, "current_summary": final_summary, "judge_hints":hints}
+                    inputs={"summaries": all_summaries, "hints":""}
                 )
             )
             final_summary = output["summary"]
+            print("INITIAL FINAL SUMMARY:\n")
+            print(final_summary)
+            end = tm.perf_counter()
+            time_final_summary = (end - start) / 60
+            print(f"total time for final summary:{time_final_summary}")
+            time_aggregate = Times(section="Aggregate",total_time=time_final_summary,avg_time=time_final_summary)
+            self.state.times.append(time_aggregate)
+            start = tm.perf_counter()
             output_judge = (
                 JudgeCrew()
                 .crew()
@@ -296,13 +311,37 @@ class ResearcherFlow(Flow[ResearcherState]):
             )
             score = output_judge["score"]
             hints = output_judge["hints"]
-            times_final_summary_judged += 1
-        
-        end = tm.perf_counter()
-        time_judge = (end - start) / 60
-        print(f"total time for correction:{time_judge}")
-        time = Times(section="Judge",total_time=time_judge,avg_time=time_judge)
-        self.state.times.append(time)
+
+            times_final_summary_judged = 0
+            while score < 5 and times_final_summary_judged < 2:
+                output = (
+                    CorrectionCrew()
+                    .crew()
+                    .kickoff(
+                        inputs={"original_text": all_summaries, "current_summary": final_summary, "judge_hints":hints}
+                    )
+                )
+                final_summary = output["summary"]
+                output_judge = (
+                    JudgeCrew()
+                    .crew()
+                    .kickoff(
+                        inputs={"source_summaries": all_summaries, "final_summary": final_summary}
+                    )
+                )
+                score = output_judge["score"]
+                hints = output_judge["hints"]
+                times_final_summary_judged += 1
+            
+            end = tm.perf_counter()
+            time_judge = (end - start) / 60
+            print(f"total time for correction:{time_judge}")
+            time = Times(section="Judge",total_time=time_judge,avg_time=time_judge)
+            self.state.times.append(time)
+            self.state.final_summary = final_summary
+
+            self._save_checkpoint()
+
 
         print("--- INDIVIDUAL PAPER ANALYSIS ---")
         print("-" * 35)
@@ -380,18 +419,21 @@ class ResearcherFlow(Flow[ResearcherState]):
 
 
 def kickoff():
-    researcher_flow= ResearcherFlow()
-    # tracker = EmissionsTracker(
-    #     project_name="My Project",
-    #     measure_power_secs= 60,
-    #     save_to_file=True,
-    #     output_dir="./emissions",
-    # )
-    # try:
-    #     researcher_flow.kickoff()
-    # finally:
-    #     tracker.stop()
+    checkpoint_path = Path(f"checkpoint_{TOPIC}_{MODEL}.json")
+    # Initialize empty state
+    initial_state = ResearcherState()
+    
+    # Load from file if it exists
+    if checkpoint_path.exists():
+        print(f"Loading existing checkpoint from {checkpoint_path}...")
+        with open(checkpoint_path, "r") as f:
+            initial_state = ResearcherState.model_validate_json(f.read())
+    
+    # Pass the loaded state to the Flow
+    researcher_flow = ResearcherFlow(state=initial_state)
     researcher_flow.kickoff()
+    # researcher_flow= ResearcherFlow()
+    # researcher_flow.kickoff()
 
 def plot():
     researcher_flow= ResearcherFlow()
