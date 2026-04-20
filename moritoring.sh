@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOPIC="Vision_Transformers"
-MODEL="qwen35_122b"
+MODEL="qwen3-next_80b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
