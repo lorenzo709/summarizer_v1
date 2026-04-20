@@ -1,4 +1,5 @@
 from crewai import LLM, Agent, Crew, Process, Task
+from crewai.flow import persist
 from crewai.project import CrewBase, agent, crew, task
 from crewai.flow.flow import Flow, listen, start, and_
 from crewai_tools import (
@@ -48,6 +49,7 @@ class ResearcherState(BaseModel):
     papers_infos : List[PaperInfos] = []
     times: List[Times] = []
 
+@persist()
 class ResearcherFlow(Flow[ResearcherState]):
     
     def _save_checkpoint(self):
