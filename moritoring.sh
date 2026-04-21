@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TOPIC="Vision_Transformers"
-MODEL="llama33_latest"
+TOPIC="catalytic_water_splitting_on_platinum"
+MODEL="qwen3-next_80b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
