@@ -19,10 +19,10 @@ load_dotenv()
 # llm = LLM(model="ollama/gpt-oss:120b", base_url="http://localhost:11434", timeout=3600)
 # llm = LLM(model="ollama/qwen2.5:72b", base_url="http://localhost:11434")
 # llm = LLM(model="ollama/llama3.1:70b", base_url="http://localhost:11434")
-llm = LLM(model="ollama/llama3.3:latest", base_url="http://localhost:11434", timeout=3600)
+# llm = LLM(model="ollama/llama3.3:latest", base_url="http://localhost:11434", timeout=3600)
 # llm = LLM(model="ollama/llama4:scout", base_url="http://localhost:11434", timeout=3600)
 # llm = LLM(model="ollama/qwen3.5:122b", base_url="http://localhost:11434", reasoning_effort='none')
-# llm = LLM(model="ollama/qwen3-next:80b", base_url="http://localhost:11434", timeout=3600)
+llm = LLM(model="ollama/qwen3-next:80b", base_url="http://localhost:11434", timeout=3600)
 
 @CrewBase
 class AggregateCrew:
