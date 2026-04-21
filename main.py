@@ -48,8 +48,9 @@ class ResearcherState(BaseModel):
     gaps_in_SOTA: str = ""
     papers_infos : List[PaperInfos] = []
     times: List[Times] = []
+    completed_summaries: List[str]
+    completed_procons: List[str]
 
-@persist()
 class ResearcherFlow(Flow[ResearcherState]):
     
     def _save_checkpoint(self):
@@ -61,7 +62,7 @@ class ResearcherFlow(Flow[ResearcherState]):
 
     @start()
     def research_interesting_papers(self):
-        if len(self.state.parsed_papers) == 10:
+        if self.state.parsed_papers:
             print("Skipping Research: Papers already parsed in state.")
             return
         self.state.model = MODEL
@@ -116,12 +117,12 @@ class ResearcherFlow(Flow[ResearcherState]):
 
     @listen(research_interesting_papers)
     async def summarize_papers(self):
-        if len(self.state.summaries) == 10:
-            print("Skipping Summarization: Summaries already exist.")
-            return
+        # if len(self.state.summaries) == 10:
+        #     print("Skipping Summarization: Summaries already exist.")
+        #     return
         
-        self.state.summaries.clear()
-
+        # self.state.summaries.clear()
+        save_lock = asyncio.Lock()
         print("starting summarazing the content")
         tasks = []
         times = []
@@ -169,27 +170,36 @@ class ResearcherFlow(Flow[ResearcherState]):
                 summary = Summary(summary=summ)
                 end = tm.perf_counter()
                 times.append(end-start)
+                async with save_lock:
+                    self.state.summaries.append(summary)
+                    self.state.completed_summaries.append(parsed_text.pdf_name)
+                    self._save_checkpoint()
                 return summary
             except Exception as e:
                 return Summary(summary=parsed_text.pdf_name)
             
         for raw_paper in self.state.parsed_papers:
+            if raw_paper.pdf_name in self.state.completed_summaries:
+                print(f"skipping {raw_paper.pdf_name} since it already has a summary")
+                continue
             task = asyncio.create_task(write_single_summary(raw_paper))
             tasks.append(task)
 
-        summaries = await asyncio.gather(*tasks) # FAILED PAPERS WILL HAVE ONLY THEIR NAMES IN THE SUMMARY
+        if tasks:
+            # summaries = await asyncio.gather(*tasks) # FAILED PAPERS WILL HAVE ONLY THEIR NAMES IN THE SUMMARY
+            await asyncio.gather(*tasks) # FAILED PAPERS WILL HAVE ONLY THEIR NAMES IN THE SUMMARY
 
-        failed_papers = [p for p in self.state.parsed_papers if p.pdf_name in summaries]
+        # failed_papers = [p for p in self.state.parsed_papers if p.pdf_name in summaries]
 
-        if len(failed_papers) > 0:
-            retry_tasks = []
-            for raw_paper in failed_papers:
-                retry_task = asyncio.create_task(write_single_summary(raw_paper))
-                retry_tasks.append(retry_task)
+        # if len(failed_papers) > 0:
+        #     retry_tasks = []
+        #     for raw_paper in failed_papers:
+        #         retry_task = asyncio.create_task(write_single_summary(raw_paper))
+        #         retry_tasks.append(retry_task)
 
-            retry_summaries = await asyncio.gather(*retry_tasks)
+        #     retry_summaries = await asyncio.gather(*retry_tasks)
 
-            summaries.extend(retry_summaries)
+        #     # summaries.extend(retry_summaries)
 
         print("finished writing all the summaries")
 
@@ -199,17 +209,19 @@ class ResearcherFlow(Flow[ResearcherState]):
         print(f"total time:{total_time} || average call time:{avg_time}")
         time =Times(section="Summarization",total_time=total_time,avg_time=avg_time)
         self.state.times.append(time)
-        self.state.summaries.extend(summaries)
+        # self.state.summaries.extend(summaries)
 
         self._save_checkpoint()
 
     @listen(research_interesting_papers)
     async def review_papers(self):
-        if len(self.state.pros_and_cons) == 10:
-            print("Skipping Review: Pros/Cons already exist.")
-            return
+        # if len(self.state.pros_and_cons) == 10:
+        #     print("Skipping Review: Pros/Cons already exist.")
+        #     return
         
-        self.state.pros_and_cons.clear()
+        # self.state.pros_and_cons.clear()
+
+        save_lock = asyncio.Lock()
 
         print("starting reviewing the papers")
         tasks = []
@@ -233,13 +245,23 @@ class ResearcherFlow(Flow[ResearcherState]):
             times.append(end-start)
             pdf_title = parsed_text.pdf_name
             pro_and_con = ProsCons(paper_name=pdf_title,pros_and_cons=pro_con)
+
+            async with save_lock:
+                self.state.pros_and_cons.append(pro_and_con)
+                self.state.completed_procons.append(parsed_text.pdf_name)
+                self._save_checkpoint()
             return pro_and_con
         
         for raw_paper in self.state.parsed_papers:
+            if raw_paper.pdf_name in self.state.completed_procons:
+                print(f"skipping {raw_paper.pdf_name} since it already has a review")
+                continue
             task = asyncio.create_task(write_single_review(raw_paper))
             tasks.append(task)
 
-        pros_and_cons = await asyncio.gather(*tasks)
+        if tasks:
+            pros_and_cons = await asyncio.gather(*tasks)
+
         print("finished writing all the reviews")
         end_total = tm.perf_counter()
         total_time = (end_total - total_start) / 60
@@ -247,7 +269,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         print(f"total time:{total_time} || average call time:{avg_time}")
         time =Times(section="Review",total_time=total_time,avg_time=avg_time)
         self.state.times.append(time)
-        self.state.pros_and_cons.extend(pros_and_cons)
+        # self.state.pros_and_cons.extend(pros_and_cons)
 
         self._save_checkpoint()
         
