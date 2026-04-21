@@ -48,8 +48,8 @@ class ResearcherState(BaseModel):
     gaps_in_SOTA: str = ""
     papers_infos : List[PaperInfos] = []
     times: List[Times] = []
-    completed_summaries: List[str]
-    completed_procons: List[str]
+    completed_summaries: List[str] = []
+    completed_procons: List[str] = []
 
 class ResearcherFlow(Flow[ResearcherState]):
     
