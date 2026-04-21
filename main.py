@@ -39,6 +39,7 @@ TOPIC = "Vision_Transformers"
 MODEL = "qwen3-next_80b"
 
 class ResearcherState(BaseModel):
+    id: str = ""
     model: str = ""
     topic: str = ""
     parsed_papers: List[ParsedText] = []
@@ -454,8 +455,8 @@ def kickoff():
             initial_state = ResearcherState.model_validate_json(f.read())
     
     # Pass the loaded state to the Flow
-    researcher_flow = ResearcherFlow(state=initial_state)
-    researcher_flow.kickoff()
+    researcher_flow = ResearcherFlow()
+    researcher_flow.kickoff(inputs=initial_state.model_dump())
     # researcher_flow= ResearcherFlow()
     # researcher_flow.kickoff()
 
