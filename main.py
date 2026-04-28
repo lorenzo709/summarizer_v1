@@ -36,7 +36,7 @@ from codecarbon import EmissionsTracker
 load_dotenv()
 
 TOPIC = "Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
-MODEL = "qwen3-next_80b"
+MODEL = "glm-47-flash_bf16"
 
 class ResearcherState(BaseModel):
     id: str = ""
