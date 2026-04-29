@@ -29,7 +29,7 @@ trap cleanup EXIT SIGINT SIGTERM
 ) &
 
 # CPU: top -d 1 sets the delay to 1 seconds
-top -b -d 1 | grep --line-buffered "Cpu(s)" > "$LOG_DIR/cpu_stats.txt" &
+top -b -d 1 | grep --line-buffered "Cpu(s)" >> "$LOG_DIR/cpu_stats.txt" &
 
 # # 4. Run Two Python Pipelines Simultaneously
 # echo "Starting pipelines... (Press Ctrl+C to stop manually)"
