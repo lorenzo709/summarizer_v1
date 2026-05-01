@@ -35,7 +35,7 @@ from codecarbon import EmissionsTracker
 
 load_dotenv()
 
-TOPIC = "catalytic_water_splitting_on_platinum"
+TOPIC = "Vision_Transformers"
 MODEL = "glm-47-flash_bf16"
 
 class ResearcherState(BaseModel):
@@ -68,8 +68,8 @@ class ResearcherFlow(Flow[ResearcherState]):
             return
         self.state.model = MODEL
         print("Starting to look for interesting papers on topic")
-        # self.state.topic = "Vision Transformers (ViT)"
-        self.state.topic = "catalytic water splitting on platinum"
+        self.state.topic = "Vision Transformers (ViT)"
+        # self.state.topic = "catalytic water splitting on platinum"
         # self.state.topic = "Zero-Shot Robot Manipulation via CLIP-based Spatial Reasoning."
         # self.state.topic = "Retrieval-Augmented Generation for Legacy Code Refactoring."
         # self.state.topic = "Liquid Neural Networks for Continuous-time Signal Processing."
@@ -90,7 +90,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         # topic = "catalytic water splitting on platinum"
         # papers_info = search_and_save_pdf(topic,"./knowledge" )
         # self.state.papers_infos = papers_info
-        folder_path = Path("./knowledge_platinum_water_splitting")
+        folder_path = Path("./knowledge_vision_transformers")
 
         for pdf_file in folder_path.glob("*.pdf"):
             pdf_name = pdf_file.name
