@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOPIC="Vision_Transformers"
-MODEL="glm-47-flash_bf16"
+MODEL="gpt-oss:120b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
