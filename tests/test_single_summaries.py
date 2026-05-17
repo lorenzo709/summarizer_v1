@@ -3,7 +3,7 @@ from deepeval.test_case import LLMTestCase
 from bert_score import BERTScorer
 from rouge_score import rouge_scorer
 from deepeval.models import OllamaModel
-
+from deepeval import evaluate
 # --- 1. SETUP DATA ---
 original_paper = """
 Your 5000+ word scientific paper text goes here. 
@@ -27,7 +27,15 @@ test_case = LLMTestCase(input=original_paper, actual_output=generated_summary)
 # n=5 generates 5 internal questions to check coverage
 summ_metric = SummarizationMetric(threshold=0.5, n=5) 
 
-summ_metric.measure(test_case)
+# summ_metric.measure(test_case)
+
+result = evaluate(
+    test_cases=[test_case],
+    metrics=[summ_metric],#summarization_metric],
+    print_results=True,
+    run_async=False,
+    verbose_mode=True
+)
 
 print(f"--- DEEPEVAL RESULTS ---")
 print(f"Alignment Score: {summ_metric.score:.2f} (1.0 = Factually perfect)")
