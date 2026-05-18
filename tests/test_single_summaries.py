@@ -15,7 +15,7 @@ tool_path = os.path.join(current_dir, "..", "tools")
 sys.path.append(os.path.abspath(src_path))
 sys.path.append(os.path.abspath(tool_path))
 
-from tools.pdf_parser_no_tool_version import parser
+from pdf_parser_no_tool_version import parser
 from src.MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText
 import glob
 import json
