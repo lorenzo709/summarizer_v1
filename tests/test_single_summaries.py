@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 
 from deepeval.metrics import SummarizationMetric
 from deepeval.test_case import LLMTestCase
@@ -6,6 +7,12 @@ from bert_score import BERTScorer
 from rouge_score import rouge_scorer
 from deepeval.models import OllamaModel
 from deepeval import evaluate
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_path = os.path.join(current_dir, "..", "src")
+tool_path = os.path.join(current_dir, "..", "tools")
+sys.path.append(os.path.abspath(src_path))
+sys.path.append(os.path.abspath(tool_path))
 
 from tools.pdf_parser_no_tool_version import parser
 from src.MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText
