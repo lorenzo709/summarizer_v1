@@ -54,3 +54,16 @@ class ResultPipeLine(BaseModel):
     gaps_in_SOTA: str
     times: List[Times]
     notes: str
+
+class EvaluationSingleSummary(BaseModel):
+    paper_name: str
+    alignment: float
+    semantic: float
+    precision: float
+
+
+class EvaluationSummaries(BaseModel):
+    topic: str
+    model: str
+    evaluations: List[EvaluationSingleSummary]
+
