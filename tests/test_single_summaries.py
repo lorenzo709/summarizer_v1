@@ -100,7 +100,7 @@ for file_path in json_files:
 
     try:
         with open(file_path, "r") as f:
-            result_pipeline = ResultPipeLine.model_validate(json.read(f))
+            result_pipeline = ResultPipeLine.model_validate(f.read())
 
         for processed_paper in result_pipeline.processed_papers:
              original_paper = next(p for p in parsed_papers if p.pdf_name == processed_paper.paper_name)
