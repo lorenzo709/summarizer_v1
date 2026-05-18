@@ -7,6 +7,7 @@ from bert_score import BERTScorer
 from rouge_score import rouge_scorer
 from deepeval.models import OllamaModel
 from deepeval import evaluate
+import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 src_path = os.path.join(current_dir, "..", "src")
@@ -16,7 +17,6 @@ sys.path.append(os.path.abspath(tool_path))
 
 from tools.pdf_parser_no_tool_version import parser
 from src.MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText
-import os
 import glob
 import json
 
