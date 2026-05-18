@@ -103,7 +103,8 @@ for file_path in json_files:
             result_pipeline = ResultPipeLine.model_validate_json(f.read())
 
         for processed_paper in result_pipeline.processed_papers:
-             original_paper = next(p for p in parsed_papers if p.pdf_name == processed_paper.paper_name)
+             raw_paper = next(p for p in parsed_papers if p.pdf_name == processed_paper.paper_name)
+             original_paper = raw_paper.parsed_text
              generated_summary = processed_paper.summary
              test_summary(original_paper, generated_summary)
         
