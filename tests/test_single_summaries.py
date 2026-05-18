@@ -16,7 +16,7 @@ sys.path.append(os.path.abspath(src_path))
 sys.path.append(os.path.abspath(tool_path))
 
 from pdf_parser_no_tool_version import parser
-from src.MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText
+from MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText
 import glob
 import json
 
