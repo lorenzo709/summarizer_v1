@@ -56,10 +56,9 @@ class ResultPipeLine(BaseModel):
     notes: str
 
 class EvaluationSingleSummary(BaseModel):
-    paper_name: str
-    alignment: float
-    semantic: float
-    precision: float
+    deepeval: float
+    BERT_score: float
+    Rouge_L: float
 
 
 class EvaluationSummaries(BaseModel):
