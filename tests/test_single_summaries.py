@@ -123,6 +123,7 @@ json_files = glob.glob(os.path.join(input_folder, "*.json"))
 parsed_papers = parsing_all_the_papers()
 
 checkpoint_path = Path("checkpoint.json")
+
 if checkpoint_path.is_file():
     with open("checkpoint.json", "r") as f:
         results_evaluated = json.load(f)
@@ -131,7 +132,6 @@ else:
 
 for file_path in json_files:
     file_name = os.path.basename(file_path)
-
 
     if file_name in results_evaluated:
         print(f"Already evaluated: {file_name}")
@@ -148,6 +148,7 @@ for file_path in json_files:
                 model = result_pipeline.model,
                 evaluations = []
             )
+
             for processed_paper in result_pipeline.processed_papers:
                 raw_paper = next(p for p in parsed_papers if p.pdf_name == processed_paper.paper_name)
                 print(raw_paper.pdf_name)
