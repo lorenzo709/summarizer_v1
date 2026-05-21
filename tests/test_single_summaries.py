@@ -45,11 +45,32 @@ def parsing_all_the_papers():
 
     return parsed_papers
 
-def initialize_scorer():
-    scorer = BERTScorer(lang="en", model_type="microsoft/deberta-xlarge-mnli")
-    return scorer
 
-def test_summary(scorer, original_paper, generated_summary) -> EvaluationSingleSummary:
+# 2. DEFINE THE G-EVAL CRITERIA AND STEPS
+# G-Eval translates these criteria into custom scoring prompts natively.
+scientific_alignment_metric = GEval(
+    name="Scientific Hallucination and Alignment",
+    criteria=(
+        "Determine whether the generated summary is factually aligned with the original text. "
+        "The summary must not introduce outside information, extrapolate trends, alter scientific "
+        "data/metrics, or declare conclusions unsupported by the source text."
+    ),
+    evaluation_steps=[
+        "Read through the original scientific text and identify all core facts, data points, and constraints.",
+        "Examine the generated summary sentence by sentence.",
+        "Cross-reference every metric, p-value, sample size, or technical claim in the summary against the original text.",
+        "Flag an alignment error if the summary introduces concepts, results, or data points not found anywhere in the source text (Hallucination).",
+        "Penalize heavily if the summary states a relationship or outcome as absolute when the paper states it as speculative or conditional.",
+        "Provide a score from 0 to 1 based on factual correctness, where 1.0 means completely hallucination-free and aligned, and 0.0 means completely inaccurate."
+    ],
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
+    threshold=0.85 # We demand high factual precision for science
+)
+
+bert_scorer = BERTScorer(lang="en", model_type="microsoft/deberta-xlarge-mnli")
+r_scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
+
+def test_summary(original_paper, generated_summary) -> EvaluationSingleSummary:
 
     # --- 2. DEEPEVAL (Alignment & Hallucination Check) ---
     # This uses an LLM to extract 'truths' from the source and compare to the summary.
@@ -58,33 +79,7 @@ def test_summary(scorer, original_paper, generated_summary) -> EvaluationSingleS
     # summ_metric = SummarizationMetric(threshold=0.5, n=5) 
 
     # summ_metric.measure(test_case)
-    # 2. DEFINE THE G-EVAL CRITERIA AND STEPS
-    # G-Eval translates these criteria into custom scoring prompts natively.
-    scientific_alignment_metric = GEval(
-        name="Scientific Hallucination and Alignment",
-        criteria=(
-            "Determine whether the generated summary is factually aligned with the original text. "
-            "The summary must not introduce outside information, extrapolate trends, alter scientific "
-            "data/metrics, or declare conclusions unsupported by the source text."
-        ),
-        evaluation_steps=[
-            "Read through the original scientific text and identify all core facts, data points, and constraints.",
-            "Examine the generated summary sentence by sentence.",
-            "Cross-reference every metric, p-value, sample size, or technical claim in the summary against the original text.",
-            "Flag an alignment error if the summary introduces concepts, results, or data points not found anywhere in the source text (Hallucination).",
-            "Penalize heavily if the summary states a relationship or outcome as absolute when the paper states it as speculative or conditional.",
-            "Provide a score from 0 to 1 based on factual correctness, where 1.0 means completely hallucination-free and aligned, and 0.0 means completely inaccurate."
-        ],
-        evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
-        threshold=0.85 # We demand high factual precision for science
-    )
-    # result = evaluate(
-    #     test_cases=[test_case],
-    #     metrics=[summ_metric],#summarization_metric],
-    #     print_results=True,
-    #     run_async=False,
-    #     verbose_mode=True
-    # )
+
     scientific_alignment_metric.measure(test_case)
     print(f"--- DEEPEVAL RESULTS ---")
     print(f"Alignment Score: {scientific_alignment_metric.score:.2f} (1.0 = Factually perfect)")
@@ -92,15 +87,13 @@ def test_summary(scorer, original_paper, generated_summary) -> EvaluationSingleS
 
     # --- 3. BERTSCORE (Semantic Meaning) ---
     # This ignores word counts and looks at the 'vibe' and technical meaning.
-    P, R, F1 = scorer.score([generated_summary], [original_paper])
+    P, R, F1 = bert_scorer.score([generated_summary], [original_paper])
 
     print(f"--- BERTSCORE RESULTS ---")
     print(f"Semantic Similarity (F1): {F1.mean().item():.4f}\n")
 
-
     # --- 4. ROUGE (Precision-focused) ---
     # We focus on PRECISION here so we don't punish the brevity.
-    r_scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
     scores = r_scorer.score(original_paper, generated_summary)
 
     print(f"--- ROUGE RESULTS ---")
@@ -133,8 +126,6 @@ if checkpoint_path.is_file():
 else:
     results_evaluated = []
 
-scorer = initialize_scorer()
-
 for file_path in json_files:
     file_name = os.path.basename(file_path)
 
@@ -164,7 +155,7 @@ for file_path in json_files:
 
                 original_paper = raw_paper.parsed_text
                 generated_summary = processed_paper.summary
-                single_summary_eval = test_summary(scorer, original_paper, generated_summary)
+                single_summary_eval = test_summary(original_paper, generated_summary)
                 evaluation_result.evaluations.append(single_summary_eval)
 
             filename = f"eval_{result_pipeline.topic}_{result_pipeline.model}.json"
