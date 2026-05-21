@@ -45,7 +45,11 @@ def parsing_all_the_papers():
 
     return parsed_papers
 
-def test_summary(original_paper, generated_summary) -> EvaluationSingleSummary:
+def initialize_scorer():
+    scorer = BERTScorer(lang="en", model_type="microsoft/deberta-xlarge-mnli")
+    return scorer
+
+def test_summary(scorer, original_paper, generated_summary) -> EvaluationSingleSummary:
 
     # --- 2. DEEPEVAL (Alignment & Hallucination Check) ---
     # This uses an LLM to extract 'truths' from the source and compare to the summary.
@@ -88,7 +92,6 @@ def test_summary(original_paper, generated_summary) -> EvaluationSingleSummary:
 
     # --- 3. BERTSCORE (Semantic Meaning) ---
     # This ignores word counts and looks at the 'vibe' and technical meaning.
-    scorer = BERTScorer(lang="en", model_type="microsoft/deberta-xlarge-mnli")
     P, R, F1 = scorer.score([generated_summary], [original_paper])
 
     print(f"--- BERTSCORE RESULTS ---")
@@ -130,6 +133,8 @@ if checkpoint_path.is_file():
 else:
     results_evaluated = []
 
+scorer = initialize_scorer()
+
 for file_path in json_files:
     file_name = os.path.basename(file_path)
 
@@ -159,7 +164,7 @@ for file_path in json_files:
 
                 original_paper = raw_paper.parsed_text
                 generated_summary = processed_paper.summary
-                single_summary_eval = test_summary(original_paper, generated_summary)
+                single_summary_eval = test_summary(scorer, original_paper, generated_summary)
                 evaluation_result.evaluations.append(single_summary_eval)
 
             filename = f"eval_{result_pipeline.topic}_{result_pipeline.model}.json"
