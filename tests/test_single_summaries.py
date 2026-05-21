@@ -20,6 +20,52 @@ from MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries
 import glob
 import json
 
+import re
+
+def extract_abstract(full_text: str) -> str:
+    """
+    Extracts the abstract from a parsed scientific paper using regex.
+    Includes fallbacks for non-standard formatting.
+    """
+    text = full_text.strip()
+    
+    # ---------------------------------------------------------
+    # STRATEGY 1: Look for 'Abstract' and stop at 'Introduction'
+    # ---------------------------------------------------------
+    # This regex looks for "Abstract" (case-insensitive, optionally with numbers/colons)
+    # and captures everything up to "Introduction" (also case-insensitive).
+    pattern = re.compile(
+        r'(?:^|\n)\s*(?:0\.?\s*)?ABSTRACT\s*[:\n](.*?)(?:(?:^|\n)\s*(?:1|I)\.?\s*INTRODUCTION)', 
+        re.IGNORECASE | re.DOTALL | re.MULTILINE
+    )
+    
+    match = pattern.search(text)
+    
+    if match:
+        abstract_text = match.group(1).strip()
+        # Failsafe: If the regex caught too much (e.g., it missed the Introduction header),
+        # we cap it at 400 words (the standard max length for a scientific abstract).
+        words = abstract_text.split()
+        if len(words) > 400:
+            return " ".join(words[:400])
+        return abstract_text
+        
+    # ---------------------------------------------------------
+    # STRATEGY 2: "Abstract" is found, but no "Introduction"
+    # ---------------------------------------------------------
+    fallback_pattern = re.compile(r'\bAbstract\b[\s:]*(.*)', re.IGNORECASE | re.DOTALL)
+    fallback_match = fallback_pattern.search(text)
+    
+    if fallback_match:
+        abstract_text = fallback_match.group(1).strip()
+        return " ".join(abstract_text.split()[:400])
+        
+    # ---------------------------------------------------------
+    # STRATEGY 3: No headers found at all
+    # ---------------------------------------------------------
+    # If the PDF parser stripped the word "Abstract", it's usually at the very 
+    # beginning of the document anyway. Grab the first 400 words.
+    return " ".join(text.split()[:400])
 
 def parsing_all_the_papers():
 
@@ -70,7 +116,7 @@ scientific_alignment_metric = GEval(
 bert_scorer = BERTScorer(lang="en", model_type="microsoft/deberta-xlarge-mnli")
 r_scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
 
-def test_summary(original_paper, generated_summary) -> EvaluationSingleSummary:
+def test_summary(abstract, original_paper, generated_summary) -> EvaluationSingleSummary:
 
     # --- 2. DEEPEVAL (Alignment & Hallucination Check) ---
     # This uses an LLM to extract 'truths' from the source and compare to the summary.
@@ -87,7 +133,7 @@ def test_summary(original_paper, generated_summary) -> EvaluationSingleSummary:
 
     # --- 3. BERTSCORE (Semantic Meaning) ---
     # This ignores word counts and looks at the 'vibe' and technical meaning.
-    P, R, F1 = bert_scorer.score([generated_summary], [original_paper])
+    P, R, F1 = bert_scorer.score([generated_summary], [abstract])
 
     print(f"--- BERTSCORE RESULTS ---")
     print(f"Semantic Similarity (F1): {F1.mean().item():.4f}\n")
@@ -153,9 +199,10 @@ for file_path in json_files:
                 if raw_paper.pdf_name == processed_paper.paper_name:
                     print("Paper name match")
 
+                abstract = extract_abstract(raw_paper.parsed_text)
                 original_paper = raw_paper.parsed_text
                 generated_summary = processed_paper.summary
-                single_summary_eval = test_summary(original_paper, generated_summary)
+                single_summary_eval = test_summary(abstract, original_paper, generated_summary)
                 evaluation_result.evaluations.append(single_summary_eval)
 
             filename = f"eval_{result_pipeline.topic}_{result_pipeline.model}.json"
