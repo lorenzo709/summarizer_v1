@@ -155,7 +155,7 @@ def test_summary(abstract, original_paper, generated_summary) -> EvaluationSingl
     return single_sum_eval
 
 
-input_folder = "./output_pipeline"
+input_folder = "./output_pipeline_corrected"
 output_folder = "./result_evaluations"
 
 os.makedirs(output_folder, exist_ok=True)
