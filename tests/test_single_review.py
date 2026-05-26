@@ -90,10 +90,10 @@ json_files = glob.glob(os.path.join(input_folder, "*.json"))
 
 parsed_papers = parsing_all_the_papers()
 
-checkpoint_path = Path("checkpoint.json")
+checkpoint_path = Path("checkpoint_single_review.json")
 
 if checkpoint_path.is_file():
-    with open("checkpoint.json", "r") as f:
+    with open("checkpoint_single_review.json", "r") as f:
         results_evaluated = json.load(f)
 else:
     results_evaluated = []
@@ -136,7 +136,7 @@ for file_path in json_files:
                 f.write(evaluation_result.model_dump_json())
 
             results_evaluated.append(file_name)
-            with open("checkpoint.json", "w") as f:
+            with open("checkpoint_single_review.json", "w") as f:
                 f.write(json.dumps(results_evaluated))
         
     except Exception as e:
