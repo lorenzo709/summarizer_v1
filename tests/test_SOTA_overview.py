@@ -118,7 +118,7 @@ def test(metric, original_paper, generated_review) -> float:
 
 
 input_folder = "./output_pipeline_corrected"
-output_folder = "./result_SOTA_final_summary"
+output_folder = "./result_evaluations_SOTA_f_summary"
 
 
 os.makedirs(output_folder, exist_ok=True)
