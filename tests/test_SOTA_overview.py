@@ -71,12 +71,12 @@ research_gap_metric = GEval(
     
     CRITICAL FACTUALITY & ALIGNMENT RULE: If the agent suggests research opportunities that are 
     NOT justified by the provided input text (i.e., external hallucinations or generic ideas), 
-    or if it fails to include the exact title **'High-Impact Research Opportunities'**, 
     heavily penalize the score.
     """,
+    # or if it fails to include the exact title **'High-Impact Research Opportunities'**, 
     evaluation_steps=[
         "Verify that the output is a structured, continuous text report categorizing gaps (Methodology, Data, Scope, or Theory).",
-        "Check for the exact bolded header: **'High-Impact Research Opportunities'** followed by a bulleted list.",
+        # "Check for the exact bolded header: **'High-Impact Research Opportunities'** followed by a bulleted list.",
         "Evaluate each research opportunity in the list: Is it clearly articulated as a research question or proposal?",
         "Cross-reference each opportunity with the input text: Is it explicitly justified by the limitations provided, or did the agent hallucinate/invent external problems?",
         "Assess if the opportunities genuinely address filling a major 'hole' in the current State-of-the-Art based on the text.",
