@@ -162,7 +162,7 @@ for file_path in json_files:
             # raw papers version
             paper_map = {p.pdf_name: p for p in parsed_papers}
 
-            all_raw_papers = "\n".join(paper_map[proc.paper_name] for proc in result_pipeline.processed_papers)
+            all_raw_papers = "\n".join(paper_map[proc.paper_name].parsed_text for proc in result_pipeline.processed_papers)
 
             # raw_papers = []
             # for processed_paper in result_pipeline.processed_papers:
