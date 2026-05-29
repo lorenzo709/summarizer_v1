@@ -66,14 +66,14 @@ research_gap_metric = GEval(
     
     The agent must:
     1. Systematically categorize gaps in Methodology, Data, Scope, or Theory based ONLY on the input limitations.
-    2. Include a bulleted list titled exactly **'High-Impact Research Opportunities'**.
-    3. Ensure each opportunity is a clear research question/proposal, is directly justified by the input, and focuses on filling a SOTA hole.
+    2. Ensure each opportunity is a clear research question/proposal, is directly justified by the input, and focuses on filling a SOTA hole.
     
     CRITICAL FACTUALITY & ALIGNMENT RULE: If the agent suggests research opportunities that are 
     NOT justified by the provided input text (i.e., external hallucinations or generic ideas), 
     heavily penalize the score.
     """,
     # or if it fails to include the exact title **'High-Impact Research Opportunities'**, 
+    # 2. Include a bulleted list titled exactly **'High-Impact Research Opportunities'**.
     evaluation_steps=[
         "Verify that the output is a structured, continuous text report categorizing gaps (Methodology, Data, Scope, or Theory).",
         # "Check for the exact bolded header: **'High-Impact Research Opportunities'** followed by a bulleted list.",
