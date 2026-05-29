@@ -65,7 +65,7 @@ research_gap_metric = GEval(
     Evaluate the quality of a continuous text (or list) report analyzing aggregated research limitations.
     
     The agent must:
-    1. Systematically categorize gaps in Methodology, Data, Scope, or Theory based ONLY on the input limitations.
+    1. Systematically categorize gaps based ONLY on the input limitations.
     2. Ensure each opportunity is a clear research question/proposal, is directly justified by the input, and focuses on filling a SOTA hole.
     
     CRITICAL FACTUALITY & ALIGNMENT RULE: If the agent suggests research opportunities that are 
@@ -75,7 +75,7 @@ research_gap_metric = GEval(
     # or if it fails to include the exact title **'High-Impact Research Opportunities'**, 
     # 2. Include a bulleted list titled exactly **'High-Impact Research Opportunities'**.
     evaluation_steps=[
-        "Verify that the output is a structured, continuous text (or list) report categorizing gaps (Methodology, Data, Scope, or Theory).",
+        "Verify that the output is a structured, continuous text (or list) report categorizing gaps.",
         # "Check for the exact bolded header: **'High-Impact Research Opportunities'** followed by a bulleted list.",
         "Evaluate each research opportunity in the list: Is it clearly articulated as a research question or proposal?",
         "Cross-reference each opportunity with the input text: Is it explicitly justified by the limitations provided, or did the agent hallucinate/invent external problems?",
