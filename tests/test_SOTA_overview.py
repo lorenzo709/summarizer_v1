@@ -17,7 +17,7 @@ sys.path.append(os.path.abspath(src_path))
 sys.path.append(os.path.abspath(tool_path))
 
 from pdf_parser_no_tool_version import parser
-from MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText
+from MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText, SummaryProConsSinglePaper
 import glob
 import json
 
@@ -159,6 +159,13 @@ for file_path in json_files:
                 if "gaps_in_SOTA" in raw_data and not isinstance(raw_data["gaps_in_SOTA"], str):
                     raw_data["gaps_in_SOTA"] = json.dumps(raw_data["gaps_in_SOTA"], indent=2)
 
+                # FIX THE NESTED DICTS: Convert processed_papers dicts into Pydantic objects
+                # Replace 'ProcessedPaperModel' with the actual name of the class used inside ResultPipeLine
+                if "processed_papers" in raw_data and isinstance(raw_data["processed_papers"], list):
+                    raw_data["processed_papers"] = [
+                        SummaryProConsSinglePaper.model_construct(**p) if isinstance(p, dict) else p 
+                        for p in raw_data["processed_papers"]
+                    ]
                 # Shove the data back into your model without strict validation
                 result_pipeline = ResultPipeLine.model_construct(**raw_data)
 
