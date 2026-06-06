@@ -161,6 +161,7 @@ for file_path in json_files:
 
                 # Shove the data back into your model without strict validation
                 result_pipeline = ResultPipeLine.model_construct(**raw_data)
+                print(result_pipeline)
 
             evaluation_result = EvaluationSummaries(
                 topic = result_pipeline.topic,
