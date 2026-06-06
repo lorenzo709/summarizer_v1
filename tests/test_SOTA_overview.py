@@ -150,7 +150,7 @@ for file_path in json_files:
             try:
                 result_pipeline = ResultPipeLine.model_validate_json(f.read())
             except ValidationError as e:
-                raw_data = json.loads(f.read)
+                raw_data = json.loads(f.read())
                 # If final_summary is a dictionary/object, turn it into a JSON string
                 if "final_summary" in raw_data and not isinstance(raw_data["final_summary"], str):
                     raw_data["final_summary"] = json.dumps(raw_data["final_summary"], indent=2)
