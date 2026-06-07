@@ -4,6 +4,7 @@ import sys
 from deepeval.metrics import SummarizationMetric, GEval 
 from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 from bert_score import BERTScorer
+from pydantic import ValidationError
 from rouge_score import rouge_scorer
 from deepeval.models import OllamaModel
 from deepeval import evaluate
@@ -16,7 +17,7 @@ sys.path.append(os.path.abspath(src_path))
 sys.path.append(os.path.abspath(tool_path))
 
 from pdf_parser_no_tool_version import parser
-from MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText
+from MyTypes import ResultPipeLine, EvaluationSingleSummary, EvaluationSummaries, PaperFound, ParsedText, SummaryProConsSinglePaper
 import glob
 import json
 
@@ -109,7 +110,29 @@ for file_path in json_files:
 
     try:
         with open(file_path, "r") as f:
-            result_pipeline = ResultPipeLine.model_validate_json(f.read())
+            # result_pipeline = ResultPipeLine.model_validate_json(f.read())
+
+            file_content = f.read()
+            try:
+                result_pipeline = ResultPipeLine.model_validate_json(file_content)
+            except ValidationError as e:
+                raw_data = json.loads(file_content)
+                # If final_summary is a dictionary/object, turn it into a JSON string
+                if "final_summary" in raw_data and not isinstance(raw_data["final_summary"], str):
+                    raw_data["final_summary"] = json.dumps(raw_data["final_summary"], indent=2)
+                    
+                if "gaps_in_SOTA" in raw_data and not isinstance(raw_data["gaps_in_SOTA"], str):
+                    raw_data["gaps_in_SOTA"] = json.dumps(raw_data["gaps_in_SOTA"], indent=2)
+
+                # FIX THE NESTED DICTS: Convert processed_papers dicts into Pydantic objects
+                # Replace 'ProcessedPaperModel' with the actual name of the class used inside ResultPipeLine
+                if "processed_papers" in raw_data and isinstance(raw_data["processed_papers"], list):
+                    raw_data["processed_papers"] = [
+                        SummaryProConsSinglePaper.model_construct(**p) if isinstance(p, dict) else p 
+                        for p in raw_data["processed_papers"]
+                    ]
+                # Shove the data back into your model without strict validation
+                result_pipeline = ResultPipeLine.model_construct(**raw_data)
 
             evaluation_result = EvaluationSummaries(
                 topic = result_pipeline.topic,
