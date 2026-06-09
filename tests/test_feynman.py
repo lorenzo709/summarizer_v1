@@ -127,7 +127,7 @@ for file_path in md_files:
             topic, _ = os.path.splitext(file_name)
 
             print(f"CURRENT TOPIC: {topic}")
-
+            print(file_content[:50])
             evaluation_result = EvaluationSummaries(
                 topic = topic,
                 model = "gpt_oss:120b",
