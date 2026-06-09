@@ -82,6 +82,29 @@ research_gap_metric = GEval(
     threshold=0.80  # Fails the test if the score is below 0.80
 )
 
+literature_review_metric = GEval(
+    name="Literature Review Structural Alignment",
+    criteria="""
+    Evaluate the quality of a Literature Review report designed to map the state of an academic field.
+    
+    The generated report must accurately capture three core pillars BASED ONLY on the input texts:
+    1. Consensus: What do the source researchers explicitly agree on?
+    2. Controversies/Disagreements: Where do the source researchers conflict, argue, or hold differing conclusions?
+    3. Unexplored Gaps: What specific areas do the source texts explicitly call out as unstudied or remaining unexplored?
+
+    CRITICAL FACTUALITY RULE: Heavily penalize hallucinations.
+    """,
+    evaluation_steps=[
+        "Check if the report establishes a clear mapping of what researchers agree on (Consensus) using the input text.",
+        "Verify if the report identifies actual friction or varying viewpoints (Controversies) present in the source materials.",
+        "Assess if the identified unexplored areas (Gaps) are directly grounded in the input text limitations rather than generic ideas.",
+        "Ensure the language focuses on mapping the 'state of the field' rather than acting as a simple summary or deep research brief.",
+        "Assign a score from 0.0 to 1.0. Deduct heavily if the report lacks structural mapping of disagreements/gaps, or contains external hallucinations."
+    ],
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
+    threshold=0.80  # Fails if the score falls below 0.80
+)
+
 def run_geval_test(metric: GEval, original_paper: str, generated_review: str) -> float:
 
     test_case = LLMTestCase(input=original_paper, actual_output=generated_review)
@@ -138,7 +161,8 @@ for file_path in md_files:
             raw_papers_list = topic_dict["parsed_papers"]
             all_raw_papers = "\n".join([paper.parsed_text for paper in raw_papers_list])
 
-            score = run_geval_test(research_gap_metric,all_raw_papers, file_content)
+            # score = run_geval_test(research_gap_metric,all_raw_papers, file_content)
+            score = run_geval_test(literature_review_metric,all_raw_papers, file_content)
             evaluation_result.evaluations.append(score)
 
             filename = f"eval_{topic}_gpt_oss:120b.json"
