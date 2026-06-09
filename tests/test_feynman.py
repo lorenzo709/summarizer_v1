@@ -25,7 +25,7 @@ import re
 
 def parsing_all_the_papers():
 
-    knowledge_folders =["../knowledge_feynman/liquid-nn-cst", "../knowledge_feynman/platinum-water-splitting", "../knowledge_feynman/rag-legacy-refactor", "../knowledge_feynman/vision-transformers", "../knowledge_feynman/zero-shot-clip-manipulation"]
+    knowledge_folders =["../knowledge_feynman/liquid-nn-cts", "../knowledge_feynman/platinum-water-splitting", "../knowledge_feynman/rag-legacy-refactor", "../knowledge_feynman/vision-transformers", "../knowledge_feynman/zero-shot-clip-manipulation"]
 
     list_paper_parsed_by_topic = []
 
