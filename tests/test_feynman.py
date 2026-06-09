@@ -161,8 +161,8 @@ for file_path in md_files:
             raw_papers_list = topic_dict["parsed_papers"]
             all_raw_papers = "\n".join([paper.parsed_text for paper in raw_papers_list])
 
-            # score = run_geval_test(research_gap_metric,all_raw_papers, file_content)
-            score = run_geval_test(literature_review_metric,all_raw_papers, file_content)
+            score = run_geval_test(research_gap_metric,all_raw_papers, file_content)
+            # score = run_geval_test(literature_review_metric,all_raw_papers, file_content)
             evaluation_result.evaluations.append(score)
 
             filename = f"eval_{topic}_gpt_oss:120b.json"
@@ -171,7 +171,7 @@ for file_path in md_files:
                 f.write(evaluation_result.model_dump_json())
 
             results_evaluated.append(file_name)
-            with open("checkpoint_SOTA_f_sum.json", "w") as f:
+            with open("checkpoint_feynman.json", "w") as f:
                 f.write(json.dumps(results_evaluated))
         
     except Exception as e:
