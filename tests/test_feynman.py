@@ -25,14 +25,14 @@ import re
 
 def parsing_all_the_papers():
 
-    # knowledge_folders =["../knowledge", "../knowledge_platinum_water_splitting", "../knowledge_retrieval_augment_generation", "../knowledge_vision_transformers", "../knowledge_Zero_Shot_Robot_Manipulation"]
-
     knowledge_folders =["../knowledge_feynman/liquid-nn-cst", "../knowledge_feynman/platinum-water-splitting", "../knowledge_feynman/rag-legacy-refactor", "../knowledge_feynman/vision-transformers", "../knowledge_feynman/zero-shot-clip-manipulation"]
-    parsed_papers = []
+
     list_paper_parsed_by_topic = []
+
     for knowledge_folder in knowledge_folders:
         papers_by_topic = { }
         folder_path = Path(knowledge_folder)
+        parsed_papers = []
         papers_to_parse = []
         for pdf_file in folder_path.glob("*.pdf"):
             pdf_name = pdf_file.name
@@ -49,6 +49,7 @@ def parsing_all_the_papers():
             parsed_papers.append(final_paper)
 
         papers_by_topic["topic"] = knowledge_folder.split("/")[-1]
+        print(papers_by_topic["topic"])
         papers_by_topic["parsed_papers"] = parsed_papers
         list_paper_parsed_by_topic.append(papers_by_topic)
 
@@ -121,10 +122,11 @@ for file_path in md_files:
 
     try:
         with open(file_path, "r") as f:
+            print("OPENED FILE")
             file_content = f.read()
             topic, _ = os.path.splitext(file_name)
 
-            print(topic)
+            print(f"CURRENT TOPIC: {topic}")
 
             evaluation_result = EvaluationSummaries(
                 topic = topic,
