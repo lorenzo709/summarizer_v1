@@ -53,7 +53,7 @@ def parsing_all_the_papers():
 
     return list_paper_parsed_by_topic
 
-json_path = Path("./data_catalytic_water.json")
+json_path = Path("./data_liquid_neural_networks.json")
 with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
