@@ -2,6 +2,12 @@ from deepeval import evaluate
 from deepeval.metrics import GEval, HallucinationMetric, AnswerRelevancyMetric, FaithfulnessMetric, SummarizationMetric
 from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_path = os.path.join(current_dir, "..", "src")
+tool_path = os.path.join(current_dir, "..", "tools")
+sys.path.append(os.path.abspath(src_path))
+sys.path.append(os.path.abspath(tool_path))
+
 from pathlib import Path
 import os 
 import sys
