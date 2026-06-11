@@ -53,7 +53,7 @@ def parsing_all_the_papers():
 
     return list_paper_parsed_by_topic
 
-json_path = Path("./data_RAG_for_legacy_code.json")
+json_path = Path("./data_zero_shot_robot_man.json")
 with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
