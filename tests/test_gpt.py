@@ -7,7 +7,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from MyTypes import PaperFound, ParsedText
-from tools.pdf_parser_no_tool_version import parser
+from pdf_parser_no_tool_version import parser
 import json
 
 def parsing_all_the_papers():
