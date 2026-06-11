@@ -12,7 +12,11 @@ import json
 
 def parsing_all_the_papers():
 
-    knowledge_folders =["../knowledge_feynman/liquid-nn-cts", "../knowledge_feynman/platinum-water-splitting", "../knowledge_feynman/rag-legacy-refactor", "../knowledge_feynman/vision-transformers", "../knowledge_feynman/zero-shot-clip-manipulation"]
+    knowledge_folders =["../knowledge_chatgpt/catalytic water splitting on platinum",
+                         "../knowledge_chatgpt/liquid neural networks continuous-time signal processing",
+                         "../knowledge_chatgpt/Retrival-Augmented Generation for Legacy Code Refactoring",
+                         "../knowledge_chatgpt/Visual Transformer",
+                         "../knowledge_chatgpt/Zero-shot Robot Manipulation via CLIP-based Spatial Reasoning"]
 
     list_paper_parsed_by_topic = []
 
@@ -47,15 +51,22 @@ with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
 gpt_summaries = data.get("summaries_gpt",[])
-input_gpt = str("\n\n".join([item['summary'] for item in gpt_summaries if 'summary' in item and "PAPER" not in item['summary']] ))
+paper_parsed_by_topic = parsing_all_the_papers()
 
+topic_dict = next((d for d in paper_parsed_by_topic if d.get("topic") == data['topic']), None)
+raw_papers_list = topic_dict["parsed_papers"]
+all_raw_papers = "\n".join([paper.parsed_text for paper in raw_papers_list])
+
+input_gpt_summaries = str("\n\n".join([item['summary'] for item in gpt_summaries if 'summary' in item and "PAPER" not in item['summary']] ))
+
+final_input_gpt = "\n\n".join([all_raw_papers, input_gpt_summaries])
 output_gpt = str(data.get("final_summary_gpt",[]))
 
 case_for_chat_gpt = LLMTestCase(
-    input = input_gpt,
+    input = final_input_gpt,
     actual_output= output_gpt
 )
-list_paper_parsed_by_topic = parsing_all_the_papers()
+
 synthesis_quality_metric = GEval(
     name="Cross-Document Synthesis Integrity",
     criteria=(
