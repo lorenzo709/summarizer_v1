@@ -1,11 +1,12 @@
 #!/bin/bash
 
-TOPIC="Retrieval-Augmented_Generation_for_Legacy_Code_Refactoring"
+TOPIC="Vision_Transformers"
 MODEL="gpt-oss:120b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
-LOG_DIR="logs_${TOPIC}_${MODEL}"
+BASE_LOG_DIR="./judge_on_single_summ_logs"
+LOG_DIR="$BASE_LOG_DIR/logs_${TOPIC}_${MODEL}"
 mkdir -p "$LOG_DIR"
 
 # 2. Define the Cleanup Function
