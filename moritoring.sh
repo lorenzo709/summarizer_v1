@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TOPIC="Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
-MODEL="gpt-oss:120b"
+TOPIC="Vision_Transformers"
+MODEL="deepseek-r1_70b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
