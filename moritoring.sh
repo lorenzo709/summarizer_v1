@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOPIC="catalytic_water_splitting_on_platinum"
+TOPIC="Zero-Shot_Robot_Manipulation_via_CLIP-based_Spatial_Reasoning"
 MODEL="gpt-oss:120b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
