@@ -35,10 +35,10 @@ from codecarbon import EmissionsTracker
 
 load_dotenv()
 
-TOPIC = "Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
-MODEL = "qwen3-next_80b"
+TOPIC = "Vision_Transformers"
+MODEL = "gpt-oss:120b"
 
-OUTPUT_DIR = Path("./output_results_judge_on_single_summ")
+OUTPUT_DIR = Path("./output_results_judge_on_final_sum")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 class ResearcherState(BaseModel):
     id: str = ""
@@ -70,11 +70,11 @@ class ResearcherFlow(Flow[ResearcherState]):
             return
         self.state.model = MODEL
         print("Starting to look for interesting papers on topic")
-        # self.state.topic = "Vision Transformers (ViT)"
+        self.state.topic = "Vision Transformers (ViT)"
         # self.state.topic = "catalytic water splitting on platinum"
         # self.state.topic = "Zero-Shot Robot Manipulation via CLIP-based Spatial Reasoning."
         # self.state.topic = "Retrieval-Augmented Generation for Legacy Code Refactoring."
-        self.state.topic = "Liquid Neural Networks for Continuous-time Signal Processing."
+        # self.state.topic = "Liquid Neural Networks for Continuous-time Signal Processing."
         start = tm.perf_counter()
         # output = (
         #     ResearcherCrew()
@@ -92,7 +92,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         # topic = "catalytic water splitting on platinum"
         # papers_info = search_and_save_pdf(topic,"./knowledge" )
         # self.state.papers_infos = papers_info
-        folder_path = Path("./knowledge")
+        folder_path = Path("./knowledge_vision_transformers")
 
         for pdf_file in folder_path.glob("*.pdf"):
             pdf_name = pdf_file.name
@@ -147,29 +147,29 @@ class ResearcherFlow(Flow[ResearcherState]):
                 else:
                     summ = str(raw_data)
                 # TESTING IF JUDGE IS WORTH FOR SINGLE SUMMARY (ONLY ONCE, ALWAYS)
-                output_judge = await (
-                    JudgeCrew()
-                    .crew()
-                    .kickoff_async(
-                        inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
-                    )
-                )
-                hints = output_judge["hints"]
-                score = output_judge["score"]
-                if score < 5:
-                    output_corrector = await(
-                        CorrectionCrew()
-                        .crew()
-                        .kickoff_async(
-                            inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
-                        )
-                    )
-                    raw_data_corrector = output_corrector.pydantic.summary
-                    if isinstance(raw_data_corrector, dict):
-                        corrected_summ = json.dumps(raw_data_corrector, indent = 2)
-                    else:
-                        corrected_summ = str(raw_data_corrector)
-                    summ = corrected_summ
+                # output_judge = await (
+                #     JudgeCrew()
+                #     .crew()
+                #     .kickoff_async(
+                #         inputs={"source_summaries": parsed_text.parsed_text, "final_summary": summ}
+                #     )
+                # )
+                # hints = output_judge["hints"]
+                # score = output_judge["score"]
+                # if score < 5:
+                #     output_corrector = await(
+                #         CorrectionCrew()
+                #         .crew()
+                #         .kickoff_async(
+                #             inputs={"original_text": parsed_text.parsed_text, "current_summary": summ, "judge_hints":hints}
+                #         )
+                #     )
+                #     raw_data_corrector = output_corrector.pydantic.summary
+                #     if isinstance(raw_data_corrector, dict):
+                #         corrected_summ = json.dumps(raw_data_corrector, indent = 2)
+                #     else:
+                #         corrected_summ = str(raw_data_corrector)
+                #     summ = corrected_summ
                 summary = Summary(summary=summ)
                 end = tm.perf_counter()
                 times.append(end-start)
@@ -328,43 +328,43 @@ class ResearcherFlow(Flow[ResearcherState]):
             print(f"total time for final summary:{time_final_summary}")
             time_aggregate = Times(section="Aggregate",total_time=time_final_summary,avg_time=time_final_summary)
             self.state.times.append(time_aggregate)
-            # start = tm.perf_counter()
-            # output_judge = (
-            #     JudgeCrew()
-            #     .crew()
-            #     .kickoff(
-            #         inputs={"source_summaries": all_summaries, "final_summary": final_summary}
-            #     )
-            # )
-            # score = output_judge["score"]
-            # hints = output_judge["hints"]
+            start = tm.perf_counter()
+            output_judge = (
+                JudgeCrew()
+                .crew()
+                .kickoff(
+                    inputs={"source_summaries": all_summaries, "final_summary": final_summary}
+                )
+            )
+            score = output_judge["score"]
+            hints = output_judge["hints"]
 
-            # times_final_summary_judged = 0
-            # while score < 5 and times_final_summary_judged < 2:
-            #     output = (
-            #         CorrectionCrew()
-            #         .crew()
-            #         .kickoff(
-            #             inputs={"original_text": all_summaries, "current_summary": final_summary, "judge_hints":hints}
-            #         )
-            #     )
-            #     final_summary = output["summary"]
-            #     output_judge = (
-            #         JudgeCrew()
-            #         .crew()
-            #         .kickoff(
-            #             inputs={"source_summaries": all_summaries, "final_summary": final_summary}
-            #         )
-            #     )
-            #     score = output_judge["score"]
-            #     hints = output_judge["hints"]
-            #     times_final_summary_judged += 1
+            times_final_summary_judged = 0
+            while score < 5 and times_final_summary_judged < 2:
+                output = (
+                    CorrectionCrew()
+                    .crew()
+                    .kickoff(
+                        inputs={"original_text": all_summaries, "current_summary": final_summary, "judge_hints":hints}
+                    )
+                )
+                final_summary = output["summary"]
+                output_judge = (
+                    JudgeCrew()
+                    .crew()
+                    .kickoff(
+                        inputs={"source_summaries": all_summaries, "final_summary": final_summary}
+                    )
+                )
+                score = output_judge["score"]
+                hints = output_judge["hints"]
+                times_final_summary_judged += 1
             
-            # end = tm.perf_counter()
-            # time_judge = (end - start) / 60
-            # print(f"total time for correction:{time_judge}")
-            # time = Times(section="Judge",total_time=time_judge,avg_time=time_judge)
-            # self.state.times.append(time)
+            end = tm.perf_counter()
+            time_judge = (end - start) / 60
+            print(f"total time for correction:{time_judge}")
+            time = Times(section="Judge",total_time=time_judge,avg_time=time_judge)
+            self.state.times.append(time)
             self.state.final_summary = final_summary
 
             self._save_checkpoint()
