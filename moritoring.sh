@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOPIC="Zero-Shot_Robot_Manipulation_via_CLIP-based_Spatial_Reasoning"
+TOPIC="Retrieval-Augmented_Generation_for_Legacy_Code_Refactoring"
 MODEL="qwen3-next_80b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
