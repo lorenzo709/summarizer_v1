@@ -35,8 +35,8 @@ from codecarbon import EmissionsTracker
 
 load_dotenv()
 
-TOPIC = "Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
-MODEL = "deepseek-r1_70b"
+TOPIC = "Vision_Transformers"
+MODEL = "glm-47-flash_bf16"
 
 OUTPUT_DIR = Path("./output_results_judge_on_final_sum")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -70,11 +70,11 @@ class ResearcherFlow(Flow[ResearcherState]):
             return
         self.state.model = MODEL
         print("Starting to look for interesting papers on topic")
-        # self.state.topic = "Vision Transformers (ViT)"
+        self.state.topic = "Vision Transformers (ViT)"
         # self.state.topic = "catalytic water splitting on platinum"
         # self.state.topic = "Zero-Shot Robot Manipulation via CLIP-based Spatial Reasoning."
         # self.state.topic = "Retrieval-Augmented Generation for Legacy Code Refactoring."
-        self.state.topic = "Liquid Neural Networks for Continuous-time Signal Processing."
+        # self.state.topic = "Liquid Neural Networks for Continuous-time Signal Processing."
         start = tm.perf_counter()
         # output = (
         #     ResearcherCrew()
@@ -92,7 +92,7 @@ class ResearcherFlow(Flow[ResearcherState]):
         # topic = "catalytic water splitting on platinum"
         # papers_info = search_and_save_pdf(topic,"./knowledge" )
         # self.state.papers_infos = papers_info
-        folder_path = Path("./knowledge")
+        folder_path = Path("./knowledge_vision_transformers")
 
         for pdf_file in folder_path.glob("*.pdf"):
             pdf_name = pdf_file.name
