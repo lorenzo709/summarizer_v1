@@ -1,11 +1,11 @@
 #!/bin/bash
 
-TOPIC="Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
+TOPIC="Vision_Transformers"
 MODEL="qwen3-next_80b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
-BASE_LOG_DIR="./judge_on_final_sum_logs"
+BASE_LOG_DIR="./no_judge_at_all_logs"
 LOG_DIR="$BASE_LOG_DIR/logs_${TOPIC}_${MODEL}"
 mkdir -p "$LOG_DIR"
 
