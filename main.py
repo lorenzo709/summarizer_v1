@@ -36,7 +36,7 @@ from codecarbon import EmissionsTracker
 load_dotenv()
 
 TOPIC = "Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
-MODEL = "glm-47-flash_bf16"
+MODEL = "gpt-oss:120b"
 
 OUTPUT_DIR = Path("./output_results_no_judge_at_all")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
