@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOPIC="Liquid_Neural_Networks_for_Continuous-time_Signal_Processing"
+TOPIC="Vision_Transformers"
 MODEL="gpt-oss:120b"
 # 1. Setup unique log folder
 # TIMESTAMP=$(date +%Y%m%d_%H%M%S)
