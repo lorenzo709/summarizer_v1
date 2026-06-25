@@ -118,8 +118,8 @@ def run_geval_test(metric: GEval, original_paper: str, generated_review: str) ->
     return metric.score
 
 
-input_folder = "./output_pipeline_corrected"
-output_folder = "./result_evaluations_SOTA_f_summary"
+input_folder = "./output_results_judge_on_final_sum"
+output_folder = "./result_evaluations_SOTA_f_summary_judge_on_final_sum"
 
 
 os.makedirs(output_folder, exist_ok=True)
