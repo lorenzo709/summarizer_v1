@@ -198,7 +198,7 @@ for file_path in json_files:
 
             SOTA_generated = result_pipeline.gaps_in_SOTA
             final_summary_generated = result_pipeline.final_summary
-
+            print(final_summary_generated[:100])
             scores["SOTA"] = run_geval_test(research_gap_metric,all_raw_papers, SOTA_generated)
             scores["final_summary"] = run_geval_test(synthesis_quality_metric,all_raw_papers, final_summary_generated)
             evaluation_result.evaluations.append(scores)
