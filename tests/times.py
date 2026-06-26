@@ -11,7 +11,7 @@ tool_path = os.path.join(current_dir, "..", "tools")
 sys.path.append(os.path.abspath(src_path))
 sys.path.append(os.path.abspath(tool_path))
 
-input_folder = "./output_results_judge_on_single_summ"
+input_folder = "./output_results_no_judge_at_all"
 output_folder = "./times"
 
 os.makedirs(output_folder, exist_ok=True)
